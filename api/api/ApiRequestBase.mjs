@@ -1,4 +1,4 @@
-import {getServiceBinder} from "velor/utils/injection/ServicesContext.mjs";
+import {getServiceBinder} from "velor-utils/utils/injection/ServicesContext.mjs";
 import {getApi} from "../services/apiServices.mjs";
 
 export class ApiRequestBase {

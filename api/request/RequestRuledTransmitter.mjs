@@ -8,7 +8,7 @@ import {
     doNotThrowOnStatusRule,
     retryRule
 } from "./rules.mjs";
-import {noOp} from "velor/utils/functional.mjs";
+import {noOp} from "velor-utils/utils/functional.mjs";
 
 export class RequestRuledTransmitter extends ApiRequestBuilder {
     #rule = alwaysSendRule;

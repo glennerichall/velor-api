@@ -3,8 +3,8 @@ import {
     getServiceBinder,
     SCOPE_SINGLETON,
     ServicesContext
-} from "velor/utils/injection/ServicesContext.mjs";
-import {setupTestContext} from "velor/test/setupTestContext.mjs";
+} from "velor-utils/utils/injection/ServicesContext.mjs";
+import {setupTestContext} from "velor-utils/test/setupTestContext.mjs";
 import {s_fetch} from "../api/services/apiServiceKeys.mjs";
 import {RequestInvoker} from "../api/request/RequestInvoker.mjs";
 import {getFetch} from "../api/services/apiServices.mjs";

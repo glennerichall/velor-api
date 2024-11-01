@@ -1,4 +1,4 @@
-import {retry} from "velor/utils/functional.mjs";
+import {retry} from "velor-utils/utils/functional.mjs";
 import {takeInFlightResultRule} from "../request/rules.mjs";
 import {getRequestBuilder} from "../services/apiServices.mjs";
 import {unpackResponse} from "../request/unpackResponse.mjs";

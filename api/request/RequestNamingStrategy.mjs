@@ -1,4 +1,4 @@
-import {expressRouteToRegExp} from "velor/utils/expressRouteToRegExp.mjs";
+import {expressRouteToRegExp} from "velor-utils/utils/expressRouteToRegExp.mjs";
 
 export class RequestNamingStrategy {
     #urlProvider;

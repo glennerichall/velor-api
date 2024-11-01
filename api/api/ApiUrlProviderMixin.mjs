@@ -1,7 +1,7 @@
 import {
     buildUrl,
     isValidURL
-} from "velor/utils/urls.mjs";
+} from "velor-utils/utils/urls.mjs";
 import {getApi} from "../services/apiServices.mjs";
 
 function getUrlFromName(urlProvider, urlBuilder) {

@@ -1,4 +1,4 @@
-import {composeRetryUntil} from "velor/utils/functional.mjs";
+import {composeRetryUntil} from "velor-utils/utils/functional.mjs";
 
 export const retryRule = n => composeRetryUntil(
     alwaysSendRule,

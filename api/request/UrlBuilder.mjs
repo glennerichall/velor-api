@@ -1,4 +1,4 @@
-import {buildUrl} from "velor/utils/urls.mjs";
+import {buildUrl} from "velor-utils/utils/urls.mjs";
 
 export class UrlBuilder {
     #url;

@@ -1,4 +1,4 @@
-import {Emitter} from "velor/utils/Emitter.mjs";
+import {Emitter} from "velor-utils/utils/Emitter.mjs";
 
 export class RequestTracker extends Emitter {
     #store;

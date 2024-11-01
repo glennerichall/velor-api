@@ -1,4 +1,4 @@
-import {retry} from "velor/utils/functional.mjs";
+import {retry} from "velor-utils/utils/functional.mjs";
 import {ApiRequestBase} from "./api/ApiRequestBase.mjs";
 
 export class UrlApi extends ApiRequestBase {
