@@ -6,12 +6,14 @@ import {
     SCOPE_PROTOTYPE
 } from "velor-utils/utils/injection/ServicesContext.mjs";
 import {
-    s_api,
-    s_requestBuilder
+    s_api, s_fetch,
+    s_requestBuilder, s_requestTransmitter
 } from "../api/services/apiServiceKeys.mjs";
 import {Api} from "../api/api/Api.mjs";
 import {createInstance} from "velor-utils/utils/injection/createInstance.mjs";
-import {RequestBuilder} from "../api/request/RequestBuilder.mjs"; // Update the path to your module
+import {RequestBuilder} from "../api/request/RequestBuilder.mjs";
+import {RequestTransmitter} from "../api/request/RequestTransmitter.mjs";
+import sinon from "sinon";
 
 const {
     expect,
@@ -19,7 +21,7 @@ const {
 } = setupTestContext()
 
 test.describe('ApiRequestBase Class', () => {
-    let instance, services;
+    let instance, services, transmitter, stub;
 
     test.beforeEach(() => {
         services = createAppServicesInstance(
@@ -30,6 +32,14 @@ test.describe('ApiRequestBase Class', () => {
                         scope: SCOPE_PROTOTYPE,
                         clazz: RequestBuilder,
                     },
+                    [s_requestTransmitter]: {
+                        scope: SCOPE_PROTOTYPE,
+                        factory: (services, builder) => {
+                            transmitter = new RequestTransmitter(builder);
+                            stub = sinon.stub(transmitter, 'send').returns({});
+                            return transmitter;
+                        },
+                    }
                 }
             }
         );
@@ -60,14 +70,6 @@ test.describe('ApiRequestBase Class', () => {
         test('should return a new instance with updated options', () => {
             let newInstance = instance.withOptions({key: 'value2'});
             expect(newInstance.options).to.deep.equal({key: 'value2'});
-        });
-    });
-
-    test.describe('prepareRequestBuilder()', () => {
-        test('should prepare the requestBuilder', () => {
-            let requestBuilder = {options: () => ({key: 'value'})};
-            let builder = instance.prepareRequestBuilder(requestBuilder);
-            expect(builder).to.deep.equal({key: 'value'});
         });
     });
 
@@ -162,4 +164,27 @@ test.describe('ApiRequestBase Class', () => {
             });
         });
     });
+
+    test.describe('sending', () => {
+        test('should call transmitter send', async () => {
+            let builder = instance.get('/an/url/to/a/resource');
+            await builder.send();
+            expect(stub.calledOnce).to.be.true;
+        })
+    })
+
+    test.describe('listener', () => {
+        test('should call listener', async () => {
+            let callback = sinon.spy();
+            instance.setListener(callback);
+
+            let builder = instance.get('/an/url/to/a/resource');
+            await builder.send();
+
+            expect(callback.callCount).to.equal(1);
+            expect(callback.calledWith(builder)).to.be.true;
+
+
+        })
+    })
 });

@@ -33,6 +33,6 @@ export function getRequestBuilder(services, ...args) {
     return getProvider(services)[s_requestBuilder](...args);
 }
 
-export function getRequestTransmitter(services) {
-    return getProvider(services)[s_requestTransmitter]();
+export function getRequestTransmitter(services, ...args) {
+    return getProvider(services)[s_requestTransmitter](...args);
 }

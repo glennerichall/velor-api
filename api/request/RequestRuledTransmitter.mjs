@@ -1,4 +1,3 @@
-import {ApiRequestBuilder} from "../api/ApiRequestBuilder.mjs";
 import {
     getRequestRegulator
 } from "../services/apiServices.mjs";
@@ -9,17 +8,18 @@ import {
     retryRule
 } from "./rules.mjs";
 import {noOp} from "velor-utils/utils/functional.mjs";
+import {RequestTransmitter} from "./RequestTransmitter.mjs";
 
-export class RequestRuledTransmitter extends ApiRequestBuilder {
+export class RequestRuledTransmitter extends RequestTransmitter {
     #rule = alwaysSendRule;
-    #listener;
+    #onResponse;
 
-    constructor(method, url) {
-        super(method, url);
+    constructor(builder) {
+        super(builder);
     }
 
     onResponse(listener) {
-        this.#listener = listener;
+        this.#onResponse = listener;
         return this;
     }
 
@@ -38,15 +38,10 @@ export class RequestRuledTransmitter extends ApiRequestBuilder {
         return this;
     }
 
-    async send(data) {
-        this.set('X-Requested-With', 'XMLHttpRequest');
-        if (data) {
-            this.setContent(data);
-        }
-        let request = this.getRequest();
-        let response = getRequestRegulator(this).accept(request, this.#rule);
-        if (this.#listener) {
-            this.#listener(response).catch(noOp);
+    async sendRequest(request, invoker) {
+        let response = await getRequestRegulator(this).accept(request, invoker, this.#rule);
+        if (this.#onResponse) {
+            this.#onResponse(response).catch(noOp);
         }
         return response;
     }

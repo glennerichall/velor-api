@@ -7,12 +7,17 @@ export class RequestTransmitter {
         this.#builder = builder;
     }
 
+    async sendRequest(request, invoker) {
+        return invoker.send(request);
+    }
+
     async send(data) {
         this.#builder.set('X-Requested-With', 'XMLHttpRequest');
         if (data) {
             this.#builder.setContent(data);
         }
         let request = this.#builder.getRequest();
-        return getRequestInvoker(this).send(request);
+        let invoker = getRequestInvoker(this);
+        return this.sendRequest(request, invoker);
     }
 }

@@ -3,8 +3,6 @@ import {
     getApi,
     getRequestTransmitter
 } from "../services/apiServices.mjs";
-import {forwardMethods} from "velor-utils/utils/proxy.mjs";
-import {RequestTransmitter} from "../request/RequestTransmitter.mjs";
 
 export class ApiRequestBase {
     #options;
@@ -41,11 +39,11 @@ export class ApiRequestBase {
 
     prepareRequestBuilder(builder) {
         builder.options(this.options);
-        let transmitter = getRequestTransmitter(this);
-        forwardMethods(transmitter, builder);
+        let transmitter = getRequestTransmitter(this, builder);
         if (this.#listener) {
             this.#listener(builder);
         }
+        builder.send = data => transmitter.send(data);
         return builder;
     }
 
