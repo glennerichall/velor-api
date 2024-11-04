@@ -7,6 +7,9 @@ export class UrlBuilder {
 
     constructor(url) {
         this.#url = url;
+        if (!this.#url) {
+            throw new Error("Url parameter missing");
+        }
     }
 
     getUrl() {

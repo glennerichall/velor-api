@@ -5,7 +5,8 @@ import {
     s_requestBuilder,
     s_requestInvoker,
     s_requestRegulator,
-    s_requestTracker
+    s_requestTracker,
+    s_requestTransmitter
 } from "./apiServiceKeys.mjs";
 
 export function getFetch(services) {
@@ -30,4 +31,8 @@ export function getRequestRegulator(services) {
 
 export function getRequestBuilder(services, ...args) {
     return getProvider(services)[s_requestBuilder](...args);
+}
+
+export function getRequestTransmitter(services) {
+    return getProvider(services)[s_requestTransmitter]();
 }

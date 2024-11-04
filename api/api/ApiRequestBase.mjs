@@ -1,5 +1,10 @@
 import {getServiceBinder} from "velor-utils/utils/injection/ServicesContext.mjs";
-import {getApi} from "../services/apiServices.mjs";
+import {
+    getApi,
+    getRequestTransmitter
+} from "../services/apiServices.mjs";
+import {forwardMethods} from "velor-utils/utils/proxy.mjs";
+import {RequestTransmitter} from "../request/RequestTransmitter.mjs";
 
 export class ApiRequestBase {
     #options;
@@ -34,10 +39,12 @@ export class ApiRequestBase {
         return clone;
     }
 
-    prepareRequestBuilder(requestBuilder) {
-        let builder = requestBuilder.options(this.options);
+    prepareRequestBuilder(builder) {
+        builder.options(this.options);
+        let transmitter = getRequestTransmitter(this);
+        forwardMethods(transmitter, builder);
         if (this.#listener) {
-            this.#listener(requestBuilder);
+            this.#listener(builder);
         }
         return builder;
     }

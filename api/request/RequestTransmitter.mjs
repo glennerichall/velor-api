@@ -1,18 +1,18 @@
 import {getRequestInvoker} from "../services/apiServices.mjs";
-import {RequestBuilder} from "./RequestBuilder.mjs";
 
-export class RequestTransmitter extends RequestBuilder {
+export class RequestTransmitter {
+    #builder;
 
-    constructor(method, url) {
-        super(method, url);
+    constructor(builder) {
+        this.#builder = builder;
     }
 
     async send(data) {
-        this.set('X-Requested-With', 'XMLHttpRequest');
+        this.#builder.set('X-Requested-With', 'XMLHttpRequest');
         if (data) {
-            this.setContent(data);
+            this.#builder.setContent(data);
         }
-        let request = this.getRequest();
+        let request = this.#builder.getRequest();
         return getRequestInvoker(this).send(request);
     }
 }
