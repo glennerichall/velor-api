@@ -1,10 +1,11 @@
 import {getServiceBinder} from "velor-utils/utils/injection/ServicesContext.mjs";
 import {
     getApi,
+    getRequestInvoker,
     getRequestTransmitter
 } from "../services/apiServices.mjs";
 
-export class ApiRequestBase {
+export class ApiRequesterBase {
     #options;
     #listener;
 
@@ -39,11 +40,14 @@ export class ApiRequestBase {
 
     prepareRequestBuilder(builder) {
         builder.options(this.options);
-        let transmitter = getRequestTransmitter(this, builder);
         if (this.#listener) {
             this.#listener(builder);
         }
-        builder.send = data => transmitter.send(data);
+        builder.send = data => {
+            let transmitter = getRequestTransmitter(this);
+            let invoker = getRequestInvoker(this);
+            return transmitter.send(data, builder, invoker);
+        };
         return builder;
     }
 

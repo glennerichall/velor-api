@@ -1,7 +1,7 @@
 import {retry} from "velor-utils/utils/functional.mjs";
-import {ApiRequestBase} from "./api/ApiRequestBase.mjs";
+import {ApiRequesterBase} from "./api/ApiRequesterBase.mjs";
 
-export class UrlApi extends ApiRequestBase {
+export class UrlApi extends ApiRequesterBase {
     #apiDescriptionUrl;
 
     constructor(apiDescriptionUrl) {

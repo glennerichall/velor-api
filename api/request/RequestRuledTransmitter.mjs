@@ -1,31 +1,22 @@
-import {
-    getRequestRegulator
-} from "../services/apiServices.mjs";
+import {getRequestRegulator} from "../services/apiServices.mjs";
 import {
     alwaysSendRule,
     chainRules,
     doNotThrowOnStatusRule,
     retryRule
 } from "./rules.mjs";
-import {noOp} from "velor-utils/utils/functional.mjs";
-import {RequestTransmitter} from "./RequestTransmitter.mjs";
 
-export class RequestRuledTransmitter extends RequestTransmitter {
+export function ruled(builder, rule) {
+    return bindCaptureCall(builder, 'send', async (target, data) => {
+        return await getRequestRegulator(builder).accept(request, invoker, this.#rule);
+    });
+}
+
+export class RuleBuilder {
     #rule = alwaysSendRule;
-    #onResponse;
 
-    constructor(builder) {
-        super(builder);
-    }
-
-    onResponse(listener) {
-        this.#onResponse = listener;
-        return this;
-    }
-
-    rule(rule) {
-        this.#rule = rule;
-        return this;
+    build() {
+        return this.#rule;
     }
 
     doNotFailFor(...status) {
@@ -37,12 +28,12 @@ export class RequestRuledTransmitter extends RequestTransmitter {
         this.#rule = chainRules(this.#rule, retryRule(n))
         return this;
     }
+}
 
-    async sendRequest(request, invoker) {
-        let response = await getRequestRegulator(this).accept(request, invoker, this.#rule);
-        if (this.#onResponse) {
-            this.#onResponse(response).catch(noOp);
-        }
-        return response;
+export class RequestRuledTransmitter {
+    #rule;
+
+    async send(request, invoker) {
+        return await getRequestRegulator(this).accept(request, invoker, this.#rule);
     }
 }

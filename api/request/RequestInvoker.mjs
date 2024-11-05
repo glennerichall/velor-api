@@ -7,8 +7,7 @@ export class RequestInvoker {
 
     async validateResponse(request, response) {
         const {
-            url,
-            options
+            url
         } = request;
 
         if (response && !response.ok && !response.redirect) {

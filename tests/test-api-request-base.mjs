@@ -1,12 +1,12 @@
 import {setupTestContext} from "velor-utils/test/setupTestContext.mjs";
-import {ApiRequestBase} from "../api/api/ApiRequestBase.mjs";
+import {ApiRequesterBase} from "../api/api/ApiRequesterBase.mjs";
 import {
     createAppServicesInstance,
     getServiceBinder,
     SCOPE_PROTOTYPE
 } from "velor-utils/utils/injection/ServicesContext.mjs";
 import {
-    s_api, s_fetch,
+    s_api,
     s_requestBuilder, s_requestTransmitter
 } from "../api/services/apiServiceKeys.mjs";
 import {Api} from "../api/api/Api.mjs";
@@ -43,7 +43,7 @@ test.describe('ApiRequestBase Class', () => {
                 }
             }
         );
-        instance = getServiceBinder(services).createInstance(ApiRequestBase);
+        instance = getServiceBinder(services).createInstance(ApiRequesterBase);
     })
 
     test.describe('getter methods', () => {
@@ -61,7 +61,7 @@ test.describe('ApiRequestBase Class', () => {
                     }
                 }
             );
-            instance = getServiceBinder(services).createInstance(ApiRequestBase, {key: 'value'});
+            instance = getServiceBinder(services).createInstance(ApiRequesterBase, {key: 'value'});
             expect(instance.options).to.deep.equal({key: 'value'});
         });
     });
