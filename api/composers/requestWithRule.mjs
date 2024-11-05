@@ -4,16 +4,8 @@ import {
     getRequestRegulator
 } from "../services/apiServices.mjs";
 import {
-    createApiRequester,
-} from "./createApiRequester.mjs";
-import {createProxyReplaceResult} from "velor-utils/utils/proxy.mjs";
-
-export function composeRequester(api, urlProvider, options) {
-    let requester = createApiRequester(api, invokerAdapter, options);
-    createProxyReplaceResult(requester, builder => {
-
-    });
-}
+    createApiWithSendMethod,
+} from "./createApiWithSendMethod.mjs";
 
 export function requestWithRule(services, rule, options) {
     let invoker = getRequestInvoker(services);
@@ -25,5 +17,5 @@ export function requestWithRule(services, rule, options) {
             return regulator.accept(request, invoker, rule);
         }
     };
-    return createApiRequester(api, invokerAdapter, options);
+    return createApiWithSendMethod(api, invokerAdapter, options);
 }

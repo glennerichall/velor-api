@@ -1,15 +1,16 @@
 import {setupTestContext} from "velor-utils/test/setupTestContext.mjs";
 import sinon from "sinon";
-import {composeRequestTransmitter} from "../api/composers/composeRequestTransmitter.mjs";
-import {bindSendMethodToBuilder} from "../api/composers/bindSendMethodToBuilder.mjs";
-import {createApiRequester} from "../api/composers/createApiRequester.mjs";
-import {createAppServicesInstance, SCOPE_SINGLETON} from "velor-utils/utils/injection/ServicesContext.mjs";
+import {composeSendRequest} from "../api/composers/composeSendRequest.mjs";
+import {
+    createAppServicesInstance,
+    SCOPE_SINGLETON
+} from "velor-utils/utils/injection/ServicesContext.mjs";
 import {
     s_api,
     s_fetch,
     s_requestBuilder,
     s_requestInvoker,
-    s_requestRegulator, s_requestTracker
+    s_requestRegulator
 } from "../api/services/apiServiceKeys.mjs";
 import {Api} from "../api/api/Api.mjs";
 import {RequestInvoker} from "../api/request/RequestInvoker.mjs";
@@ -24,7 +25,7 @@ const {
     describe,
     it,
     beforeEach
-} = setupTestContext()
+} = setupTestContext();
 
 describe('requester', () => {
 
@@ -118,48 +119,6 @@ describe('requester', () => {
         })
     })
 
-    describe('bindSendMethodToBuilder()', function () {
-        let mockInvoker, mockBuilder;
-
-        beforeEach(function () {
-            // Mock functionalities
-            mockInvoker = {
-                send: sinon.fake.resolves('Mocked request transmission')
-            };
-            mockBuilder = {
-                set: sinon.fake(),
-                setContent: sinon.fake(),
-                getRequest: sinon.fake.returns('Mocked getRequest')
-            };
-        });
-
-        it('should bind send method to builder', function () {
-            const boundBuilder = bindSendMethodToBuilder(mockInvoker, mockBuilder);
-            expect(boundBuilder).to.have.property('send').that.is.a('function');
-        });
-
-        it('should call send method in builder, which in turn calls invoker.send', async function () {
-            const data = 'Mocked data';
-            const boundBuilder = bindSendMethodToBuilder(mockInvoker, mockBuilder);
-            await boundBuilder.send(data);
-            expect(mockInvoker.send.calledOnce).to.be.true;
-            expect(mockBuilder.set.calledWith('X-Requested-With', 'XMLHttpRequest')).to.be.true;
-            expect(mockBuilder.setContent.calledWith(data)).to.be.true;
-            expect(mockBuilder.getRequest.calledOnce).to.be.true;
-        });
-
-        it('should not call setContent if data is not provided', async function () {
-            const boundBuilder = bindSendMethodToBuilder(mockInvoker, mockBuilder);
-            await boundBuilder.send();
-            expect(mockBuilder.setContent.called).to.be.false;
-        });
-
-        it('should return a promise when invoking send method in the builder', function () {
-            const boundBuilder = bindSendMethodToBuilder(mockInvoker, mockBuilder);
-            expect(boundBuilder.send()).to.be.an.instanceof(Promise);
-        });
-    });
-
     describe('composeRequestTransmitter', () => {
         let mockInvoker;
         let mockBuilder;
@@ -181,7 +140,7 @@ describe('requester', () => {
         it('should set the header and send the request without data', () => {
             mockBuilder.getRequest.returns('mockRequest');
             mockInvoker.send.returns('mockResponse');
-            const transmitter = composeRequestTransmitter(mockInvoker);
+            const transmitter = composeSendRequest(mockInvoker);
 
             expect(transmitter(mockBuilder)).to.exist;
 
@@ -194,7 +153,7 @@ describe('requester', () => {
             const mockData = 'mockData';
             mockBuilder.getRequest.returns(mockRequest);
             mockInvoker.send.returns('mockResponse');
-            const transmitter = composeRequestTransmitter(mockInvoker);
+            const transmitter = composeSendRequest(mockInvoker);
 
             expect(transmitter(mockBuilder, mockData)).to.exist;
 

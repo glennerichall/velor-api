@@ -1,4 +1,4 @@
-export function composeRequestTransmitter(invoker) {
+export function composeSendRequest(invoker) {
     return (builder, data) => {
         builder.set('X-Requested-With', 'XMLHttpRequest');
         if (data) {
