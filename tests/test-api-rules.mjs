@@ -14,7 +14,7 @@ import {setupTestContext} from "velor-utils/test/setupTestContext.mjs";
 const {
     expect,
     test
-} = setupTestContext()
+} = setupTestContext();
 
 test.describe('Rules Tests', () => {
     let invoker;

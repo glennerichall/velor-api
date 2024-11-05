@@ -1,5 +1,4 @@
 import sinon from 'sinon';
-import {RequestNamingStrategy} from "../api/request/RequestNamingStrategy.mjs";
 import {RequestTracker} from "../api/request/RequestTracker.mjs";
 
 import {setupTestContext} from "velor-utils/test/setupTestContext.mjs";
@@ -9,10 +8,8 @@ const {
     expect,
     describe,
     it,
-    beforeEach
-} = setupTestContext()
+} = setupTestContext();
 
-// Assuming an existing RequestNamingStrategy instance
 let urlProvider = {
     getUrls: () => {
         return {
@@ -54,6 +51,7 @@ describe('RequestTracker', () => {
                 name: 'url1'
             };
 
+            namingStrategy.getRequestKey.returns(requestKey);
             let result = tracker.getRequests(request);
             expect(result).to.eql(['req1', 'req2']);
         });

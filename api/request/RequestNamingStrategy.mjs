@@ -34,7 +34,7 @@ export class RequestNamingStrategy {
             if (match) {
                 request.name = match.name;
                 if (!request.params) {
-                    request.params = match.groups;
+                    request.params = match.params;
                 }
             }
         }

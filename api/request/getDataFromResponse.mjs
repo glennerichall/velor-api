@@ -1,8 +1,10 @@
 import {ResponseWrapper} from "./ResponseWrapper.mjs";
-import {getDataFromXhrResponse} from "./getDataFromXhrResponse.mjs";
+import {getDataFromXhrResponse as getDataFromXhrResponseFunction} from "./getDataFromXhrResponse.mjs";
 import {MessageWrapper} from "velor-messaging/messaging/message/MessageWrapper.mjs";
 
-export async function getDataFromResponse(response) {
+export async function getDataFromResponse(response, {
+    getDataFromXhrResponse = getDataFromXhrResponseFunction
+} = {}) {
     response = await response;
 
     if (response instanceof ResponseWrapper) {

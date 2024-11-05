@@ -1,6 +1,7 @@
 // fetch api from browser or AxiosFetcher from test stubs
-export async function getDataFromXhrResponse (response) {
+export async function getDataFromXhrResponse(response) {
     response = await response;
+    if (!response) return response;
     const contentType = response.headers.get('content-type');
     if (!contentType || !contentType.includes('application/json')) {
         return response.body;
