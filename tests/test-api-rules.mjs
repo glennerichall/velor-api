@@ -10,8 +10,7 @@ import {
     takeInFlightResultRule
 } from "../api/request/rules.mjs";
 
-import {setupTestContext} from "velor-utils/test/setupTestContext.mjs"; // Update the path to your module
-
+import {setupTestContext} from "velor-utils/test/setupTestContext.mjs";
 const {
     expect,
     test

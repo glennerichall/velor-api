@@ -3,8 +3,8 @@ import {Api} from "./Api.mjs";
 export class ApiKeyBackend extends Api {
     #apiKey;
 
-    constructor(apiKey, ...args) {
-        super(...args);
+    constructor(apiKey) {
+        super();
         this.#apiKey = apiKey;
     }
 

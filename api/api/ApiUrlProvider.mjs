@@ -1,8 +1,7 @@
 import {takeInFlightResultRule} from "../request/rules.mjs";
 import {retry} from "velor-utils/utils/functional.mjs";
 import {unpackResponse} from "../request/unpackResponse.mjs";
-import {getApi} from "../services/apiServices.mjs";
-import {ruled} from "../request/RequestRuledTransmitter.mjs";
+import {requestWithRule} from "../composers/requestWithRule.mjs";
 
 
 export class ApiUrlProvider {
@@ -31,13 +30,18 @@ export class ApiUrlProvider {
     async fetchUrls(rule = takeInFlightResultRule) {
         return retry(async () => {
             let url = this.versionUrl;
-            let response = await ruled(getApi(this).get(url), rule).send();
+            let response = await requestWithRule(this, rule).get(url).send();
+
             if (response) {
                 let version = await unpackResponse(response);
                 this.#urls = version.api.urls;
             }
             return this.#urls;
         });
+    }
+
+    getUrl(name) {
+        return this.#urls[name];
     }
 
     clear() {
