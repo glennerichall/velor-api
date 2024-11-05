@@ -10,12 +10,3 @@ export function createApiRequester(api, invoker, options) {
     });
 }
 
-export function createApiRequesterWithRule(api, invoker, regulator, rule, options) {
-    let invokerAdapter = {
-        send(request) {
-            return regulator.accept(request, invoker, rule);
-        }
-    };
-    return createApiRequester(api, invokerAdapter, options);
-}
-

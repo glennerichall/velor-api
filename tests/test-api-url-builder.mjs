@@ -4,7 +4,7 @@ import {UrlBuilder} from "../api/request/UrlBuilder.mjs"; // Update the path to 
 const {
     expect,
     test
-} = setupTestContext()
+} = setupTestContext();
 
 test.describe('UrlBuilder', () => {
 
