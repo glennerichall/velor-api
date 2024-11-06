@@ -1,151 +1,182 @@
 import {setupTestContext} from "velor-utils/test/setupTestContext.mjs";
 
 const {
-    expect,
-    describe,
-    it,
-    beforeEach
+    expect, describe, it, beforeEach
 } = setupTestContext();
 
 import sinon from 'sinon';
 
 import {
-    createAppServicesInstance,
-    getServiceBinder
+    createAppServicesInstance, getServiceBinder
 } from "velor-utils/utils/injection/ServicesContext.mjs";
 import {requestWithRule} from "../api/composers/requestWithRule.mjs";
-import {request} from "../api/composers/request.mjs";
 import {RuleBuilder} from "../api/request/RuleBuilder.mjs";
 import {
-    s_requestInvoker,
-    s_requestRegulator
+    s_requestInvoker, s_requestRegulator
 } from "../api/services/apiServiceKeys.mjs";
 import {unpackResponse} from "../api/request/unpackResponse.mjs";
 import {NotImplementedError} from "velor-utils/utils/errors/NotImplementedError.mjs";
+import {bindReplaceResult} from "velor-utils/utils/proxy.mjs";
 
-
-export class OptionsHolder {
-    #options;
-
-    constructor(options) {
-        this.#options = options ?? {};
-    }
-
-    get options() {
-        return this.#options;
-    }
-
-    withOptions(options = {}) {
-        return getServiceBinder(this).clone(this, {
-            ...this.#options,
-            ...options
-        });
-    }
-}
-
-export const ApiRuledRequestMixin = Parent => class extends Parent {
-    constructor(...args) {
-        super(...args);
-    }
-
-    requestWithRule(ruleBuilder) {
-        return requestWithRule(this, ruleBuilder.build(), this.options)
-    }
-
-    get rules() {
-        return new RuleBuilder();
-    }
-}
-
-export const ApiRequestMixin = Parent => class extends Parent {
-    constructor(...args) {
-        super(...args);
-    }
-
-    request() {
-        return request(this, this.options);
-    }
-}
-
-export const ApiRequestStoreMixin = (store, Parent) => class extends Parent {
-    constructor(...args) {
-        super(...args);
-    }
-
-    store(key) {
-        return async response => {
-            let data = await unpackResponse(response);
-            store(key, data);
-            return response;
-        };
-    }
-}
-
-export const CaptureMixin = (ParentMixin, method, capture) => Parent =>
-    class extends ParentMixin(Parent) {
-        [method](...args) {
-
-        }
-    }
-
-
-export const RequestBuilderMixin = Parent => class extends Parent {
-    constructor(...args) {
-        super(...args);
-    }
+export const RequestBuilder = Parent => class extends Parent {
 
     getBuilder(...args) {
         throw new NotImplementedError();
     }
 
     get(urlOrName) {
-        this.getBuilder('get', urlOrName);
+        return this.getBuilder('get', urlOrName);
     }
 
     post(urlOrName) {
-        this.getBuilder('post', urlOrName);
+        return this.getBuilder('post', urlOrName);
     }
 
     put(urlOrName) {
-        this.getBuilder('put', urlOrName);
+        return this.getBuilder('put', urlOrName);
     }
 
     delete(urlOrName) {
-        this.getBuilder('delete', urlOrName);
+        return this.getBuilder('delete', urlOrName);
     }
 
 }
 
-const store = (key, value) => {
-    console.log('store', key, value);
-};
+export class ApiRequestHolder {
+    #options;
+    #ruleBuilder = new RuleBuilder();
+    #key;
 
-const ApiRequestBase =
-    CaptureMixin(ApiRuledRequestMixin, 'requestWithRule')(
-        CaptureMixin(ApiRequestMixin, 'request')(
-            ApiRequestStoreMixin(
-                store, OptionsHolder
-            )));
-
-
-class UserApiExample extends ApiRequestBase {
-    constructor(options) {
-        super(options);
+    get key() {
+        return this.#key;
     }
 
-    async getSystemStatus() {
-        return this.store('APP_SYSTEM_STATUS')(this
-            .requestWithRule(this.rules.doNotFailFor(401, 403))
+    get options() {
+        return this.#options;
+    }
+
+    get rule() {
+        return this.#ruleBuilder.build();
+    }
+
+    withOptions(options = {}) {
+        this.#options = {
+            ...this.#options, ...options
+        };
+        return this;
+    }
+
+    withRule(rule) {
+        this.#ruleBuilder.append(rule);
+        return this;
+    }
+
+    saveTo(key) {
+        this.#key = key;
+        return this;
+    }
+
+    copy(holder) {
+        this.#key = holder.key;
+        this.#ruleBuilder.append(holder.rule);
+        this.#key = {...holder.options};
+    }
+
+    clone() {
+        const holder = new this.constructor();
+        holder.copy(this);
+        return holder;
+    }
+}
+
+export class ApiRequestBuilderHolder extends RequestBuilder(ApiRequestHolder) {
+    #services;
+    #store;
+
+    constructor(services, store) {
+        super();
+        this.#services = services;
+        this.#store = store;
+    }
+
+    clone() {
+        return new this.constructor(this.#services, this.#store);
+    }
+
+    getBuilder(method, nameOrUrl) {
+        let rule = this.rule;
+        let options = this.options ?? {};
+        let services = this.#services;
+        let key = this.key;
+
+        let api = requestWithRule(services, rule, options);
+        let builder = api[method](nameOrUrl);
+
+        if (key) {
+            bindReplaceResult(builder, 'getRequest', request => {
+                request.name = key;
+                return request;
+            });
+            bindReplaceResult(builder, 'send', async response => {
+                let body = await unpackResponse(response);
+                this.#store.setState(key, body);
+                return response;
+            });
+        }
+
+        return builder;
+    }
+}
+
+class ApiRequestBase {
+    #holder;
+
+    constructor(holder) {
+        this.#holder = holder ?? new ApiRequestBuilderHolder(this);
+    }
+
+    request() {
+        return this.#holder;
+    }
+
+    withOptions(options) {
+        let holder = this.#holder.clone();
+        holder.withOptions(options);
+        return getServiceBinder(this).clone(this, holder);
+    }
+
+    withRule(rule) {
+        let holder = this.#holder.clone();
+        holder.withRule(rule);
+        return getServiceBinder(this).clone(this, holder);
+    }
+}
+
+const alwaysSendRule = sinon.stub();
+const doNotThrowOnStatusRule = sinon.stub().returns(sinon.stub());
+const retryRule = sinon.stub().returns(sinon.stub());
+
+class UserApiExample extends ApiRequestBase {
+
+    constructor(...args) {
+        super(...args);
+    }
+
+    async getSystemStatus(query) {
+        return this.request()
+            .saveTo('APP_SYSTEM_STATUS')
+            .withRule(doNotThrowOnStatusRule(401, 403))
             .get('URL_SYSTEM_SESSION_COUNT')
-            .send()
-        );
+            .query(query)
+            .send();
     }
 
     getProfile() {
-        return this.store('APP_PROFILE')(this
-            .requestWithRule(this.rules.retry(3))
+        return this
+            .withRule(retryRule(3))
+            .saveTo('APP_PROFILE')
             .get('URL_PROFILE')
-            .send());
+            .send();
     }
 }
 
@@ -159,14 +190,20 @@ describe('ApiRequestBase', () => {
                 [s_requestRegulator]: {}
             }
         });
-        instance = new UserApiExample({initialOption: true});
+        instance = new UserApiExample();
         getServiceBinder(services).autoWire(instance);
     });
 
 
     it('should be able to provide rule', async () => {
         let response = await instance.getSystemStatus();
+    })
 
+    it('should be able to provide change how request is made', async () => {
+        let response = await instance
+            .withOptions({foo: 'bar'})
+            .withRule(alwaysSendRule)
+            .getSystemStatus();
     })
 
 });

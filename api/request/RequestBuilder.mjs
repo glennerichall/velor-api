@@ -48,6 +48,7 @@ export class RequestBuilder extends UrlBuilder {
             this.set('Content-Type', 'application/json');
         }
         this.#body = data;
+        return this;
     }
 
     buildOptions() {

@@ -14,12 +14,15 @@ export class RuleBuilder {
     }
 
     doNotFailFor(...status) {
-        this.#rule = chainRules(this.#rule, doNotThrowOnStatusRule(...status))
-        return this;
+        return this.append(doNotThrowOnStatusRule(...status));
     }
 
     retry(n) {
-        this.#rule = chainRules(this.#rule, retryRule(n))
+        return this.append(retryRule(n));
+    }
+
+    append(rule) {
+        this.#rule = chainRules(this.#rule, rule)
         return this;
     }
 }
