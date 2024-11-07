@@ -1,6 +1,6 @@
 import {NotImplementedError} from "velor-utils/utils/errors/NotImplementedError.mjs";
 
-export const RequestBuilderProviderMixin = Parent => class extends Parent {
+export const RequestBuilderProviderMixin = (Parent = Object) => class extends Parent {
 
     getBuilder(...args) {
         throw new NotImplementedError();
@@ -23,3 +23,5 @@ export const RequestBuilderProviderMixin = Parent => class extends Parent {
     }
 
 }
+
+export const RequestBuilderProvider = RequestBuilderProviderMixin();

@@ -16,7 +16,7 @@ import {
 import {Api} from "../api/api/Api.mjs";
 import {RequestBuilder} from "../api/request/RequestBuilder.mjs";
 import {RequestInvoker} from "../api/request/RequestInvoker.mjs";
-import {ApiRequestBase} from "../api/request/ApiRequestBase.mjs";
+import {ApiRequestBase} from "../api/contrib/ApiRequestBase.mjs";
 
 const {
     expect, describe, it, beforeEach

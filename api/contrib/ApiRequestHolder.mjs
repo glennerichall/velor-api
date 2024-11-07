@@ -1,4 +1,4 @@
-import {RuleBuilder} from "./RuleBuilder.mjs";
+import {RuleBuilder} from "../request/RuleBuilder.mjs";
 
 export class ApiRequestHolder {
     #options;

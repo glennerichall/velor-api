@@ -5,8 +5,14 @@ export class ApiRequestBase {
     #holder;
 
     constructor(holder) {
-        this.#holder = holder ?? getServiceBinder(this)
-            .createInstance(ApiRequestBuilderHolder);
+        this.#holder = holder;
+    }
+
+    initialize() {
+        if (!this.#holder) {
+            this.#holder = getServiceBinder(this)
+                .createInstance(ApiRequestBuilderHolder);
+        }
     }
 
     request() {

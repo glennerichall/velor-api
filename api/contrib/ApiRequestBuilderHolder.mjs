@@ -2,7 +2,7 @@ import {RequestBuilderProviderMixin} from "./RequestBuilderProviderMixin.mjs";
 import {ApiRequestHolder} from "./ApiRequestHolder.mjs";
 import {requestWithRule} from "../composers/requestWithRule.mjs";
 import {bindReplaceResult} from "velor-utils/utils/proxy.mjs";
-import {unpackResponse} from "./unpackResponse.mjs";
+import {unpackResponse} from "../request/unpackResponse.mjs";
 
 export class ApiRequestBuilderHolder extends RequestBuilderProviderMixin(ApiRequestHolder) {
     #store;
@@ -13,7 +13,9 @@ export class ApiRequestBuilderHolder extends RequestBuilderProviderMixin(ApiRequ
     }
 
     clone() {
-        return new this.constructor(this.#store);
+        let clone = new this.constructor(this.#store);
+        clone.copy(this);
+        return clone;
     }
 
     getBuilder(method, nameOrUrl) {
