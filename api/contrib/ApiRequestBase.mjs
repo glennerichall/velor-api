@@ -1,5 +1,5 @@
-import {ApiRequestBuilderHolder} from "./ApiRequestBuilderHolder.mjs";
 import {getServiceBinder} from "velor-utils/utils/injection/ServicesContext.mjs";
+
 
 export class ApiRequestBase {
     #holder;
@@ -8,15 +8,8 @@ export class ApiRequestBase {
         this.#holder = holder;
     }
 
-    initialize() {
-        if (!this.#holder) {
-            this.#holder = getServiceBinder(this)
-                .createInstance(ApiRequestBuilderHolder);
-        }
-    }
-
     request() {
-        return this.#holder;
+        return this.#holder.clone();
     }
 
     withOptions(options) {
