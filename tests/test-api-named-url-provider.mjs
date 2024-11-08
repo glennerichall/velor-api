@@ -3,18 +3,20 @@ import {request} from "../api/composers/request.mjs";
 import {
     createAppServicesInstance,
     SCOPE_SINGLETON
-} from "velor-utils/utils/injection/ServicesContext.mjs";
+} from "velor-utils/injection/ServicesContext.mjs";
 import {
     s_api,
     s_fetch,
     s_requestBuilder,
     s_requestInvoker,
-    s_requestRegulator
+    s_requestRegulator,
+    s_urlProvider
 } from "../api/services/apiServiceKeys.mjs";
 import {Api} from "../api/api/Api.mjs";
 import {RequestInvoker} from "../api/request/RequestInvoker.mjs";
 import {RequestBuilder} from "../api/request/RequestBuilder.mjs";
 import sinon from "sinon";
+import {getApiUrlProvider} from "../api/services/apiServices.mjs";
 
 const {
     expect,
@@ -41,17 +43,8 @@ test.describe('NamedUrlProvider', () => {
                     createHeaders: sinon.stub().returns({
                         append: sinon.stub()
                     })
-                }
+                },
             }
         });
-    })
-
-    test('should return the url from its name', async () => {
-
-        let req = await request(services, {a: 'b'}).get('URL_NAME')
-            .query('baz', 'qux')
-            .param('foo', 'bar');
-
-
     })
 })

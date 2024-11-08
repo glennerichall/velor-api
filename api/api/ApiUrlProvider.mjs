@@ -1,51 +1,60 @@
-import {takeInFlightResultRule} from "../request/rules.mjs";
+import {takeInFlightResultRule} from "../ops/rules.mjs";
 import {retry} from "velor-utils/utils/functional.mjs";
-import {unpackResponse} from "../request/unpackResponse.mjs";
-import {requestWithRule} from "../composers/requestWithRule.mjs";
+import {getApiOpsProvider} from "../services/apiPolicies.mjs";
 
 
-export class ApiUrlProvider {
-    #backendUrl;
-    #urls = null;
+export const ApiUrlProviderPolicy = policy => {
 
-    constructor(backendUrl) {
-        this.#backendUrl = backendUrl;
-    }
+    const {
+        requestWithRule,
+        unpackResponse
+    } = getApiOpsProvider(policy);
 
-    get versionUrl() {
-        return `${this.#backendUrl}/api/version`;
-    }
+    return class ApiUrlProvider {
+        #backendUrl;
+        #urls = null;
 
-    get urls() {
-        return this.#urls;
-    }
-
-    async getOrFetchUrls() {
-        if (!this.urls) {
-            await this.fetchUrls();
+        constructor(backendUrl) {
+            this.#backendUrl = backendUrl;
         }
-        return this.urls;
-    }
 
-    async fetchUrls(rule = takeInFlightResultRule) {
-        return retry(async () => {
-            let url = this.versionUrl;
-            let response = await requestWithRule(this, rule).get(url).send();
+        get versionUrl() {
+            return `${this.#backendUrl}/api/version`;
+        }
 
-            if (response) {
-                let version = await unpackResponse(response);
-                this.#urls = version.api.urls;
-            }
+        get urls() {
             return this.#urls;
-        });
-    }
+        }
 
-    getUrl(name) {
-        return this.#urls[name];
-    }
+        async getOrFetchUrls() {
+            if (!this.urls) {
+                await this.fetchUrls();
+            }
+            return this.urls;
+        }
 
-    clear() {
-        this.#urls = null;
-    }
+        async fetchUrls(rule = takeInFlightResultRule) {
+            return retry(async () => {
+                let url = this.versionUrl;
+                let response = await requestWithRule(this, rule).get(url).send();
 
+                if (response) {
+                    let version = await unpackResponse(response);
+                    this.#urls = version.api.urls;
+                }
+                return this.#urls;
+            });
+        }
+
+        getUrl(name) {
+            return this.#urls[name];
+        }
+
+        clear() {
+            this.#urls = null;
+        }
+
+    }
 }
+
+export const ApiUrlProvider = ApiUrlProviderPolicy();

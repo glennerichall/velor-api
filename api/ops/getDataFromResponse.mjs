@@ -1,4 +1,4 @@
-import {ResponseWrapper} from "./ResponseWrapper.mjs";
+import {ResponseWrapper} from "../request/ResponseWrapper.mjs";
 import {getDataFromXhrResponse as getDataFromXhrResponseFunction} from "./getDataFromXhrResponse.mjs";
 import {MessageWrapper} from "velor-messaging/messaging/message/MessageWrapper.mjs";
 

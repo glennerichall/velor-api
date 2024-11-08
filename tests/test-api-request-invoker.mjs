@@ -3,7 +3,7 @@ import {
     getServiceBinder,
     SCOPE_SINGLETON,
     ServicesContext
-} from "velor-utils/utils/injection/ServicesContext.mjs";
+} from "velor-utils/injection/ServicesContext.mjs";
 import {setupTestContext} from "velor-utils/test/setupTestContext.mjs";
 import {s_fetch} from "../api/services/apiServiceKeys.mjs";
 import {RequestInvoker} from "../api/request/RequestInvoker.mjs";
@@ -101,7 +101,8 @@ test.describe('RequestInvoker', function () {
             fetchStub.send.resolves(response);
 
             const result = await requestInvoker.send(request);
-            expect(result).to.be.instanceOf(ResponseWrapper);
+            expect(result.unpack).to.be.a('function');
+            expect(result.json).to.be.a('function');
         });
 
         test('should throw BackendError if fetch throws an error', async function () {

@@ -8,7 +8,7 @@ import {
     ignoreIfAlreadyInFlightRule,
     waitForPreviousToFinishRule,
     takeInFlightResultRule
-} from "../api/request/rules.mjs";
+} from "../api/ops/rules.mjs";
 
 import {setupTestContext} from "velor-utils/test/setupTestContext.mjs";
 const {

@@ -4,7 +4,7 @@ import {composeSendRequest} from "../api/composers/composeSendRequest.mjs";
 import {
     createAppServicesInstance,
     SCOPE_SINGLETON
-} from "velor-utils/utils/injection/ServicesContext.mjs";
+} from "velor-utils/injection/ServicesContext.mjs";
 import {
     s_api,
     s_fetch,
@@ -17,7 +17,7 @@ import {RequestInvoker} from "../api/request/RequestInvoker.mjs";
 import {RequestBuilder} from "../api/request/RequestBuilder.mjs";
 import {request} from "../api/composers/request.mjs";
 import {requestWithRule} from "../api/composers/requestWithRule.mjs";
-import {alwaysSendRule} from "../api/request/rules.mjs";
+import {alwaysSendRule} from "../api/ops/rules.mjs";
 import {getRequestInvoker} from "../api/services/apiServices.mjs"; // Update the path to your module
 
 const {

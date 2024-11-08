@@ -1,47 +1,56 @@
 import typeis from "type-is";
-import {getFetch} from "../services/apiServices.mjs";
-import {ResponseWrapper} from "./ResponseWrapper.mjs";
+import {ResponseWrapperPolicy} from "./ResponseWrapper.mjs";
 import {BackendError} from "../BackendError.mjs";
+import {getApiServicesProvider} from "../services/apiPolicies.mjs";
 
-export class RequestInvoker {
+export const RequestInvokerPolicy = policy => {
 
-    async validateResponse(request, response) {
-        const {
-            url
-        } = request;
+    const {
+        getFetch
+    } = getApiServicesProvider(policy);
 
-        if (response && !response.ok && !response.redirect) {
-            const contentType = response.headers.get('content-type') ?? "";
-            let error;
-            if (typeis.match('text/*', contentType)) {
-                error = await response.text();
-            } else if (typeis.match('*/json', contentType)) {
-                error = await response.json();
+    return class RequestInvoker {
+
+        async validateResponse(request, response) {
+            const {
+                url
+            } = request;
+
+            if (response && !response.ok && !response.redirect) {
+                const contentType = response.headers.get('content-type') ?? "";
+                let error;
+                if (typeis.match('text/*', contentType)) {
+                    error = await response.text();
+                } else if (typeis.match('*/json', contentType)) {
+                    error = await response.json();
+                }
+                throw new BackendError(response.status, error, url);
             }
-            throw new BackendError(response.status, error, url);
+
+            return response;
         }
 
-        return response;
-    }
+        async send(request) {
+            const {
+                url,
+                options
+            } = request;
+            let response;
 
-    async send(request) {
-        const {
-            url,
-            options
-        } = request;
-        let response;
+            let fetch = getFetch(this);
 
-        let fetch = getFetch(this);
+            try {
+                let promise = fetch.send(url, options);
+                request.promise = promise;
+                response = await promise;
+            } catch (e) {
+                throw new BackendError(0, e.message, request);
+            }
 
-        try {
-            let promise = fetch.send(url, options);
-            request.promise = promise;
-            response = await promise;
-        } catch (e) {
-            throw new BackendError(0, e.message, request);
+            response = await this.validateResponse(request, response);
+            return new (ResponseWrapperPolicy(policy))(response);
         }
-
-        response = await this.validateResponse(request, response);
-        return new ResponseWrapper(response);
     }
 }
+
+export const RequestInvoker = RequestInvokerPolicy();

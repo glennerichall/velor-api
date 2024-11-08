@@ -1,12 +1,14 @@
-import {getProvider} from "velor-utils/utils/injection/baseServices.mjs";
+import {getProvider} from "velor-utils/injection/baseServices.mjs";
 import {
     s_api,
+    s_apiBuilder,
     s_fetch,
     s_requestBuilder,
     s_requestInvoker,
     s_requestRegulator,
     s_requestTracker,
-    s_requestTransmitter
+    s_requestTransmitter,
+    s_urlProvider
 } from "./apiServiceKeys.mjs";
 
 export function getFetch(services) {
@@ -35,4 +37,12 @@ export function getRequestBuilder(services, ...args) {
 
 export function getRequestTransmitter(services, ...args) {
     return getProvider(services)[s_requestTransmitter](...args);
+}
+
+export function getApiBuilder(services) {
+    return getProvider(services)[s_apiBuilder]();
+}
+
+export function getApiUrlProvider(services) {
+    return getProvider(services)[s_urlProvider]();
 }

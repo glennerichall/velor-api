@@ -3,7 +3,7 @@ import {
     chainRules,
     doNotThrowOnStatusRule,
     retryRule
-} from "./rules.mjs";
+} from "../ops/rules.mjs";
 
 export const PolicyBasedRuleBuilder = (
     defaultRule,

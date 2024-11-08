@@ -5,7 +5,7 @@ import {
 
 import {setupTestContext} from "velor-utils/test/setupTestContext.mjs";
 import sinon from "sinon";
-import {alwaysSendRule} from "../api/request/rules.mjs";
+import {alwaysSendRule} from "../api/ops/rules.mjs";
 
 const {
     expect,

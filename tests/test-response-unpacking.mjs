@@ -12,9 +12,9 @@ const {
 
 import sinon from 'sinon';
 import {ResponseWrapper} from "../api/request/ResponseWrapper.mjs";
-import {getDataFromResponse} from "../api/request/getDataFromResponse.mjs";
+import {getDataFromResponse} from "../api/ops/getDataFromResponse.mjs";
 import {MessageWrapper} from "velor-messaging/messaging/message/MessageWrapper.mjs";
-import {getDataFromXhrResponse} from "../api/request/getDataFromXhrResponse.mjs";
+import {getDataFromXhrResponse} from "../api/ops/getDataFromXhrResponse.mjs";
 
 test.describe('getDataFromResponse', () => {
 
