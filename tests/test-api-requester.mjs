@@ -4,7 +4,7 @@ import {composeSendRequest} from "../api/composers/composeSendRequest.mjs";
 import {
     createAppServicesInstance,
     SCOPE_SINGLETON
-} from "velor-utils/injection/ServicesContext.mjs";
+} from "velor-services/injection/ServicesContext.mjs";
 import {
     s_api,
     s_fetch,

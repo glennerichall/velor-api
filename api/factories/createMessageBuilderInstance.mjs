@@ -1,5 +1,5 @@
 import {MessageBuilder} from "velor-messaging/messaging/message/MessageBuilder.mjs";
-import {getProvider} from "velor-utils/injection/baseServices.mjs";
+import {getProvider} from "velor-services/injection/baseServices.mjs";
 
 import {s_messageCoder} from "../services/apiServiceKeys.mjs";
 

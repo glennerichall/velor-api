@@ -4,7 +4,7 @@ import sinon from 'sinon';
 import {
     createAppServicesInstance,
     SCOPE_PROTOTYPE,
-} from "velor-utils/injection/ServicesContext.mjs";
+} from "velor-services/injection/ServicesContext.mjs";
 import {
     s_api,
     s_apiBuilder,

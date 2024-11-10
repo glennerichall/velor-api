@@ -1,6 +1,6 @@
 {
   "name": "velor-api",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "scripts": {
     "test": "npx playwright test"
   },
@@ -18,7 +18,8 @@
   },
   "dependencies": {
     "type-is": "^1.6.18",
-    "velor-utils": "github:glennerichall/velor-utils",
-    "velor-messaging": "github:glennerichall/velor-messaging"
+    "velor-messaging": "github:glennerichall/velor-messaging",
+    "velor-services": "github:glennerichall/velor-services",
+    "velor-utils": "github:glennerichall/velor-utils"
   }
 }
