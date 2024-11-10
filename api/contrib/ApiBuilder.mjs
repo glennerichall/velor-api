@@ -1,94 +1,80 @@
 import {RequestBuilderProvider} from "./RequestBuilderProviderMixin.mjs";
 import {RuleBuilder} from "../request/RuleBuilder.mjs";
-import {
-    getApiOpsProvider,
-    getApiServicesProvider,
-} from "../services/apiPolicies.mjs";
 import {bindReplaceResult} from "velor-utils/utils/proxy.mjs";
 import {isValidURL} from "velor-utils/utils/urls.mjs";
+import {requestWithRule} from "../composers/requestWithRule.mjs";
+import {getApiUrlProvider} from "../services/apiServices.mjs";
 
-export const ApiBuilderPolicy = policy => {
-    const {
-        requestWithRule
-    } = getApiOpsProvider(policy);
+export class ApiBuilder extends RequestBuilderProvider {
+    #options = {};
+    #ruleBuilder = new RuleBuilder();
+    #onBuildListeners = [];
+    #onResponseListeners = [];
 
-    const {
-        getApiUrlProvider
-    } = getApiServicesProvider(policy);
+    get #rule() {
+        return this.#ruleBuilder.build();
+    }
 
-    return class ApiBuilder extends RequestBuilderProvider {
-        #options = {};
-        #ruleBuilder = new RuleBuilder();
-        #onBuildListeners = [];
-        #onResponseListeners = [];
+    onBuild(listener) {
+        this.#onBuildListeners.push(listener);
+        return this;
+    }
 
-        get #rule() {
-            return this.#ruleBuilder.build();
-        }
+    onResponse(listener) {
+        this.#onResponseListeners.push(listener);
+        return this;
+    }
 
-        onBuild(listener) {
-            this.#onBuildListeners.push(listener);
-            return this;
-        }
+    withOptions(options = {}) {
+        this.#options = {
+            ...this.#options, ...options
+        };
+        return this;
+    }
 
-        onResponse(listener) {
-            this.#onResponseListeners.push(listener);
-            return this;
-        }
+    withRule(rule) {
+        this.#ruleBuilder.append(rule);
+        return this;
+    }
 
-        withOptions(options = {}) {
-            this.#options = {
-                ...this.#options, ...options
-            };
-            return this;
-        }
+    rename(name) {
+        this.onBuild(request => {
+            request.name = name;
+        });
+        return this;
+    }
 
-        withRule(rule) {
-            this.#ruleBuilder.append(rule);
-            return this;
-        }
+    getBuilder(method, nameOrUrl) {
+        let rule = this.#rule;
+        let options = this.#options ?? {};
 
-        rename(name) {
-            this.onBuild(request => {
-                request.name = name;
-            });
-            return this;
-        }
+        let api = requestWithRule(this, rule, options);
+        let builder = api[method](nameOrUrl);
+        let urlProvider = getApiUrlProvider(this);
 
-        getBuilder(method, nameOrUrl) {
-            let rule = this.#rule;
-            let options = this.#options ?? {};
+        bindReplaceResult(builder, 'getRequest', request => {
+            for (let listener of this.#onBuildListeners) {
+                listener(request);
+            }
+            return request;
+        });
 
-            let api = requestWithRule(this, rule, options);
-            let builder = api[method](nameOrUrl);
-            let urlProvider = getApiUrlProvider(this);
+        bindReplaceResult(builder, 'getUrl', urlOrName => {
+            let url = urlProvider.getUrl(urlOrName);
+            if (!isValidURL(url)) {
+                url = urlOrName;
+            }
+            return url;
+        });
 
-            bindReplaceResult(builder, 'getRequest', request => {
-                for (let listener of this.#onBuildListeners) {
-                    listener(request);
-                }
-                return request;
-            });
-
-            bindReplaceResult(builder, 'getUrl', urlOrName => {
-                let url = urlProvider.getUrl(urlOrName);
-                if (!isValidURL(url)) {
-                    url = urlOrName;
-                }
-                return url;
-            });
-
-            bindReplaceResult(builder, 'send', async response => {
-                for (let listener of this.#onResponseListeners) {
-                    await listener(response);
-                }
-                return response;
-            });
+        bindReplaceResult(builder, 'send', async response => {
+            for (let listener of this.#onResponseListeners) {
+                await listener(response);
+            }
+            return response;
+        });
 
 
-            return builder;
-        }
+        return builder;
     }
 }
-
-export const ApiBuilder = ApiBuilderPolicy();

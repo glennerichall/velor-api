@@ -1,25 +1,17 @@
 import {alwaysSendRule} from "../ops/rules.mjs";
-import {getApiServicesProvider} from "../services/apiPolicies.mjs";
+import {getRequestTracker} from "../services/apiServices.mjs";
 
-export const RequestRegulatorPolicy = policy => {
-    const {
-        getRequestTracker
-    } = getApiServicesProvider(policy);
+export class RequestRegulator {
 
-    return class RequestRegulator {
+    async accept(request, invoker, rule = alwaysSendRule) {
+        let tracker = getRequestTracker(this);
+        let requests = tracker.getRequests(request);
 
-        async accept(request, invoker, rule = alwaysSendRule) {
-            let tracker = getRequestTracker(this);
-            let requests = tracker.getRequests(request);
-
-            tracker.push(request);
-            try {
-                return await rule(request, requests, invoker);
-            } finally {
-                tracker.pop(request);
-            }
+        tracker.push(request);
+        try {
+            return await rule(request, requests, invoker);
+        } finally {
+            tracker.pop(request);
         }
     }
 }
-
-export const RequestRegulator = RequestRegulatorPolicy();
