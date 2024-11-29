@@ -1,6 +1,6 @@
 import {UrlBuilder} from "./UrlBuilder.mjs";
 import {isTypedArray} from "velor-utils/utils/buffer/isTypedArray.mjs";
-import {getFetch} from "../services/apiServices.mjs";
+import {getFetch} from "../application/services/apiServices.mjs";
 
 export class RequestBuilder extends UrlBuilder {
     #method;

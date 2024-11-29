@@ -8,3 +8,5 @@ export const s_requestInvoker = 'requestInvoker';
 export const s_requestRegulator = 'requestRegulator';
 export const s_messageCoder = 'messageCoder';
 export const s_urlProvider = 'urlProvider';
+export const s_requestStore = "requestStore";
+export const s_requestNamingStrategy = 'requestNamingStrategy';

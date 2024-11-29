@@ -3,7 +3,7 @@ import {RuleBuilder} from "../request/RuleBuilder.mjs";
 import {bindReplaceResult} from "velor-utils/utils/proxy.mjs";
 import {isValidURL} from "velor-utils/utils/urls.mjs";
 import {requestWithRule} from "../composers/requestWithRule.mjs";
-import {getApiUrlProvider} from "../services/apiServices.mjs";
+import {getApiUrlProvider} from "../application/services/apiServices.mjs";
 
 export class ApiBuilder extends RequestBuilderProvider {
     #options = {};

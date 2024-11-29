@@ -2,7 +2,7 @@ import {
     getApi,
     getRequestInvoker,
     getRequestRegulator
-} from "../services/apiServices.mjs";
+} from "../application/services/apiServices.mjs";
 import {
     createApiWithSendMethod,
 } from "./createApiWithSendMethod.mjs";

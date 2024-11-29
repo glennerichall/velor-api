@@ -1,15 +1,14 @@
 import sinon from 'sinon';
 import {
+    createAppServicesInstance,
     getServiceBinder,
     SCOPE_SINGLETON,
-    ServicesContext
 } from "velor-services/injection/ServicesContext.mjs";
 import {setupTestContext} from "velor-utils/test/setupTestContext.mjs";
-import {s_fetch} from "../api/services/apiServiceKeys.mjs";
+import {s_fetch} from "../api/application/services/apiServiceKeys.mjs";
 import {RequestInvoker} from "../api/request/RequestInvoker.mjs";
-import {getFetch} from "../api/services/apiServices.mjs";
+import {getFetch} from "../api/application/services/apiServices.mjs";
 import {BackendError} from "../api/BackendError.mjs";
-import {ResponseWrapper} from "../api/request/ResponseWrapper.mjs";
 
 
 const {
@@ -23,13 +22,11 @@ test.describe('RequestInvoker', function () {
     let requestInvoker;
 
     test.beforeEach(function () {
-        services = new ServicesContext({
-            scopes: {
-                [SCOPE_SINGLETON]: {
-                    [s_fetch]: {
-                        send: sinon.stub()
-                    }
-                }
+        services = createAppServicesInstance({
+            factories: {
+                [s_fetch]: sinon.stub().returns({
+                    send: sinon.stub()
+                })
             }
         });
 

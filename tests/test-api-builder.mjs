@@ -13,7 +13,7 @@ import {
     s_requestInvoker,
     s_requestRegulator,
     s_urlProvider
-} from "../api/services/apiServiceKeys.mjs";
+} from "../api/application/services/apiServiceKeys.mjs";
 import {Api} from "../api/api/Api.mjs";
 import {RequestBuilder} from "../api/request/RequestBuilder.mjs";
 import {ApiBuilder} from "../api/contrib/ApiBuilder.mjs";
@@ -21,7 +21,7 @@ import {RequestInvoker} from "../api/request/RequestInvoker.mjs";
 import {
     getApiBuilder,
     getApiUrlProvider
-} from "../api/services/apiServices.mjs";
+} from "../api/application/services/apiServices.mjs";
 import {request} from "../api/composers/request.mjs";
 
 const {

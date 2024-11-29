@@ -7,6 +7,10 @@ export class RequestNamingStrategy {
         this.#urlProvider = urlProvider;
     }
 
+    initialize() {
+
+    }
+
     findRequestNameInUrls(request) {
         let urls = this.#urlProvider.getUrls();
         let url = request.url.split('?')[0];

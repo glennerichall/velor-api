@@ -5,7 +5,9 @@ import {
     s_fetch,
     s_requestBuilder,
     s_requestInvoker,
+    s_requestNamingStrategy,
     s_requestRegulator,
+    s_requestStore,
     s_requestTracker,
     s_requestTransmitter,
     s_urlProvider
@@ -45,4 +47,12 @@ export function getApiBuilder(services) {
 
 export function getApiUrlProvider(services) {
     return getProvider(services)[s_urlProvider]();
+}
+
+export function getRequestStore(services) {
+    return getProvider(services)[s_requestStore]();
+}
+
+export function getRequestNamingStrategy(services) {
+    return getProvider(services)[s_requestNamingStrategy]();
 }

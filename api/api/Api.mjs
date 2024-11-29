@@ -1,5 +1,5 @@
 import {RequestBuilderProvider} from "../contrib/RequestBuilderProviderMixin.mjs";
-import {getRequestBuilder} from "../services/apiServices.mjs";
+import {getRequestBuilder} from "../application/services/apiServices.mjs";
 
 export class Api extends RequestBuilderProvider {
 

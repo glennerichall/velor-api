@@ -1,5 +1,5 @@
 import {alwaysSendRule} from "../ops/rules.mjs";
-import {getRequestTracker} from "../services/apiServices.mjs";
+import {getRequestTracker} from "../application/services/apiServices.mjs";
 
 export class RequestRegulator {
 
