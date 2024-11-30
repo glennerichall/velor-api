@@ -5,14 +5,16 @@ import {unpackResponse} from "../ops/unpackResponse.mjs";
 
 export class ApiUrlProvider {
     #backendUrl;
+    #versionPath;
     #urls = null;
 
-    constructor(backendUrl) {
+    constructor(backendUrl, versionPath = '/api/version') {
         this.#backendUrl = backendUrl;
+        this.#versionPath = versionPath;
     }
 
     get versionUrl() {
-        return `${this.#backendUrl}/api/version`;
+        return `${this.#backendUrl}${this.#versionPath}`;
     }
 
     get urls() {

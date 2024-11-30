@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import {
+    createAppServicesInstance,
     getServiceBinder,
-    SCOPE_SINGLETON,
 } from "velor-services/injection/ServicesContext.mjs";
 
 import {setupTestContext} from "velor-utils/test/setupTestContext.mjs";
@@ -27,11 +27,9 @@ test.describe('RequestBuilder with DI and ServicesContext', function () {
         };
 
         // Create a new ServicesContext with a singleton scope for s_fetch
-        services = new ServicesContext({
-            scopes: {
-                [SCOPE_SINGLETON]: {
-                    [s_fetch]: fetchStub // Inject the mock fetch service
-                }
+        services = createAppServicesInstance({
+            factories: {
+                [s_fetch]: ()=> fetchStub // Inject the mock fetch service
             }
         });
 
@@ -81,7 +79,7 @@ test.describe('RequestBuilder with DI and ServicesContext', function () {
 
     test.describe('setContent() method', function () {
         test('should set JSON content and the correct content-type', function () {
-            const data = { key: 'value' };
+            const data = {key: 'value'};
             requestBuilder.setContent(data);
             const options = requestBuilder.buildOptions();
 

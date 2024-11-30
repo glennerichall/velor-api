@@ -2,12 +2,18 @@ import sinon from 'sinon';
 import {RequestTracker} from "../api/request/RequestTracker.mjs";
 
 import {setupTestContext} from "velor-utils/test/setupTestContext.mjs";
+import {getInstanceBinder} from "velor-services/injection/ServicesContext.mjs";
+import {
+    s_requestNamingStrategy,
+    s_requestStore
+} from "../api/application/services/apiServiceKeys.mjs";
 
 
 const {
     expect,
     describe,
     it,
+    beforeEach
 } = setupTestContext();
 
 let urlProvider = {
@@ -30,9 +36,17 @@ let store = {
 };
 
 describe('RequestTracker', () => {
+    let tracker;
+
+    beforeEach(()=> {
+        tracker = new RequestTracker(store, namingStrategy);
+        getInstanceBinder(tracker)
+            .setInstance(s_requestNamingStrategy, namingStrategy)
+            .setInstance(s_requestStore, store);
+    })
+
     describe('#currentRequests()', () => {
         it('should get all current requests from the store', () => {
-            let tracker = new RequestTracker(store, namingStrategy);
             tracker.currentRequests;
             expect(store.getRequests.calledOnce).to.be.true;
         });
@@ -40,7 +54,6 @@ describe('RequestTracker', () => {
 
     describe('#getRequests()', () => {
         it('should get all requests of a specific key', () => {
-            let tracker = new RequestTracker(store, namingStrategy);
             let requestKey = 'GET:url1';
             store.getRequests.returns({ [requestKey]: ['req1', 'req2'] });
 
@@ -59,7 +72,6 @@ describe('RequestTracker', () => {
 
     describe('#push()', () => {
         it('should add new request to the specific key and emit an event', () => {
-            let tracker = new RequestTracker(store, namingStrategy);
             let requestKey = 'GET:url1';
 
             let request = {
@@ -76,7 +88,6 @@ describe('RequestTracker', () => {
 
     describe('#pop()', () => {
         it('should remove request from the specific key and emit an event', () => {
-            let tracker = new RequestTracker(store, namingStrategy);
             let requestKey = 'GET:url1';
             store.getRequests.returns({ [requestKey]: ['req1', 'req2'] });
 

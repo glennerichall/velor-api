@@ -1,17 +1,13 @@
 import {Emitter} from "velor-utils/utils/Emitter.mjs";
+import {
+    getRequestNamingStrategy,
+    getRequestStore
+} from "../application/services/apiServices.mjs";
 
 export class RequestTracker extends Emitter {
-    #store;
-    #requestNaming;
-
-    constructor(store, namingStrategy) {
-        super();
-        this.#store = store;
-        this.#requestNaming = namingStrategy;
-    }
 
     get currentRequests() {
-        return this.#store.getRequests();
+        return getRequestStore(this).getRequests();
     }
 
     #mergeRequests(key, ...newRequests) {
@@ -20,11 +16,11 @@ export class RequestTracker extends Emitter {
             ...currentRequests,
             [key]: newRequests
         };
-        this.#store.setRequests(currentRequests);
+        getRequestStore(this).setRequests(currentRequests);
     }
 
     #getRequestKey(request) {
-        return this.#requestNaming.getRequestKey(request);
+        return getRequestNamingStrategy(this).getRequestKey(request);
     }
 
     getRequests(request) {
