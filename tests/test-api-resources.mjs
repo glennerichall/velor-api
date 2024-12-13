@@ -94,7 +94,7 @@ describe("Resource api", () => {
         let response = await getMany('A_RESOURCE_NAME', {
             min: 19,
             max: 100
-        });
+        }).send();
 
         expect(fetch.send).calledOnce;
         let args = fetch.send.args[0];
@@ -122,7 +122,7 @@ describe("Resource api", () => {
         urlProvider.urls = {
             'A_RESOURCE_NAME_ITEM': `/api/v2/my_resource/:${ITEM_PARAM}`
         };
-        let response = await getOne('A_RESOURCE_NAME', 'my-item-id');
+        let response = await getOne('A_RESOURCE_NAME', 'my-item-id').send();
 
         expect(fetch.send).calledOnce;
         let args = fetch.send.args[0];
@@ -150,7 +150,7 @@ describe("Resource api", () => {
         };
         let response = await getOne('A_RESOURCE_NAME', 'my-item-id', {
             fields: ['field1', 'field2'],
-        });
+        }).send();
 
         expect(fetch.send).calledOnce;
         let args = fetch.send.args[0];
@@ -173,7 +173,7 @@ describe("Resource api", () => {
             data1: '234234',
             data2: 123
         };
-        let response = await create('A_RESOURCE_NAME', data);
+        let response = await create('A_RESOURCE_NAME').send(data);
 
         expect(fetch.send).calledOnce;
         let args = fetch.send.args[0];
@@ -190,7 +190,7 @@ describe("Resource api", () => {
         urlProvider.urls = {
             [getItemUrlName('A_RESOURCE_NAME')]: `/api/v2/my_resource/:${ITEM_PARAM}`
         };
-        let response = await deleteOne('A_RESOURCE_NAME', 'my-item-id');
+        let response = await deleteOne('A_RESOURCE_NAME', 'my-item-id').send();
 
         expect(fetch.send).calledOnce;
         let args = fetch.send.args[0];
@@ -215,7 +215,7 @@ describe("Resource api", () => {
         let provider = getResourceApi(services).for('A_RESOURCE_NAME');
         let response = await provider.getOne('my-item-id', {
             fields: ['field1', 'field2'],
-        });
+        }).send();
 
         expect(fetch.send).calledOnce;
         let args = fetch.send.args[0];
@@ -226,10 +226,29 @@ describe("Resource api", () => {
 
         response = await getDataFromResponse(response);
         expect(response).to.deep.eq(expectedResponse.body);
+    })
 
+    it('should provider let setting headers', async()=> {
+        urlProvider.urls = {
+            'A_RESOURCE_NAME': `/api/v2/my_resource`
+        };
 
+        let provider = getResourceApi(services).for('A_RESOURCE_NAME');
+        let response = await provider.getMany()
+            .set('x-custom-header', 'header value')
+            .send();
 
+        expect(fetch.send).calledOnce;
+        let args = fetch.send.args[0];
 
+        expect(args).to.have.length(2);
+        expect(args[0]).to.eq('/api/v2/my_resource');
+        expect(args[1]).to.have.property('method', 'GET');
+        expect(args[1]).to.have.property('headers');
+
+        expect(args[1].headers.append).calledTwice;
+
+        expect(args[1].headers.append).calledWith('x-custom-header', 'header value');
 
     })
 

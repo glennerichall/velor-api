@@ -16,8 +16,7 @@ export function composeGetOne(services, request) {
         request(services)
             .get(urlProvider.getUrl(getItemUrlName(resource)))
             .param(ITEM_PARAM, item)
-            .query(query)
-            .send();
+            .query(query);
 }
 
 export function composeGetMany(services, request) {
@@ -25,8 +24,7 @@ export function composeGetMany(services, request) {
     return (resource, query) =>
         request(services)
             .get(urlProvider.getUrl(resource))
-            .query(query)
-            .send();
+            .query(query);
 }
 
 export function composeDelete(services, request) {
@@ -34,16 +32,14 @@ export function composeDelete(services, request) {
     return (resource, item) =>
         request(services)
             .delete(urlProvider.getUrl(getItemUrlName(resource)))
-            .param(ITEM_PARAM, item)
-            .send();
+            .param(ITEM_PARAM, item);
 }
 
 export function composeCreate(services, request) {
     let urlProvider = getApiUrlProvider(services);
-    return (resource, data) =>
+    return (resource) =>
         request(services)
-            .post(urlProvider.getUrl(resource))
-            .send(data);
+            .post(urlProvider.getUrl(resource));
 }
 
 export function createResourceApiWithRuleComposers(rule = alwaysSendRule) {
@@ -70,7 +66,7 @@ export function getResourceApi(services) {
             getOne: (item, query) => getOne(name, item, query),
             getMany: (query) => getMany(name, query),
             delete: (item) => deleteOne(name, item),
-            create: (data) => create(name, data),
+            create: () => create(name),
         };
     }
 
