@@ -22,7 +22,6 @@ import {
     getApiBuilder,
     getApiUrlProvider
 } from "../api/application/services/apiServices.mjs";
-import {request} from "../api/composers/request.mjs";
 
 const {
     expect, describe, it, beforeEach

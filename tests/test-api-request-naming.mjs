@@ -10,6 +10,10 @@ const {
 
 import sinon from 'sinon';
 import {RequestNamingStrategy} from "../api/request/RequestNamingStrategy.mjs";
+import {getInstanceBinder} from "velor-services/injection/ServicesContext.mjs";
+import {
+    s_urlProvider
+} from "../api/application/services/apiServiceKeys.mjs";
 
 describe('RequestNamingStrategy', () => {
     let urlProviderMock;
@@ -17,9 +21,10 @@ describe('RequestNamingStrategy', () => {
 
     beforeEach(() => {
         urlProviderMock = {
-            getUrls: sinon.stub()
+            urls: {}
         };
-        requestNamingStrategy = new RequestNamingStrategy(urlProviderMock);
+        requestNamingStrategy = new RequestNamingStrategy();
+        getInstanceBinder(requestNamingStrategy).setInstance(s_urlProvider, urlProviderMock);
     });
 
     describe('findRequestNameInUrls', () => {
@@ -28,7 +33,7 @@ describe('RequestNamingStrategy', () => {
                 home: '/home',
                 user: '/user/:id'
             };
-            urlProviderMock.getUrls.returns(urls);
+            urlProviderMock.urls = urls;
             const request = {
                 url: '/user/1234'
             };
@@ -44,7 +49,7 @@ describe('RequestNamingStrategy', () => {
                 home: '/home',
                 user: '/user/:id'
             };
-            urlProviderMock.getUrls.returns(urls);
+            urlProviderMock.urls = urls;
             const request = {
                 url: '/profile'
             };
@@ -73,7 +78,7 @@ describe('RequestNamingStrategy', () => {
                 home: '/home',
                 user: '/user/:id'
             };
-            urlProviderMock.getUrls.returns(urls);
+            urlProviderMock.urls = urls;
             const request = {
                 url: '/user/1234'
             };
@@ -90,7 +95,7 @@ describe('RequestNamingStrategy', () => {
                 home: '/home',
                 user: '/user/:id'
             };
-            urlProviderMock.getUrls.returns(urls);
+            urlProviderMock.urls = urls;
             const request = {
                 url: '/profile'
             };
@@ -105,7 +110,7 @@ describe('RequestNamingStrategy', () => {
                 home: '/home',
                 user: '/user/:id'
             };
-            urlProviderMock.getUrls.returns(urls);
+            urlProviderMock.urls = urls;
             const request = {
                 url: '/user/1234',
                 options: {

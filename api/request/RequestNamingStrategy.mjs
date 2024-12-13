@@ -1,18 +1,10 @@
 import {expressRouteToRegExp} from "velor-utils/utils/expressRouteToRegExp.mjs";
+import {getApiUrlProvider} from "../application/services/apiServices.mjs";
 
 export class RequestNamingStrategy {
-    #urlProvider;
-
-    constructor(urlProvider) {
-        this.#urlProvider = urlProvider;
-    }
-
-    initialize() {
-
-    }
 
     findRequestNameInUrls(request) {
-        let urls = this.#urlProvider.getUrls();
+        let urls = getApiUrlProvider(this).urls;
         let url = request.url.split('?')[0];
         for (let urlName in urls) {
             let regexp = expressRouteToRegExp(urls[urlName]);

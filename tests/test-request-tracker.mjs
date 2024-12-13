@@ -7,6 +7,8 @@ import {
     s_requestNamingStrategy,
     s_requestStore
 } from "../api/application/services/apiServiceKeys.mjs";
+import {MapArray} from "velor-utils/utils/map.mjs";
+import {getRequestStore} from "../api/application/services/apiServices.mjs";
 
 
 const {
@@ -16,46 +18,24 @@ const {
     beforeEach
 } = setupTestContext();
 
-let urlProvider = {
-    getUrls: () => {
-        return {
-            url1: '/test/:id',
-            url2: '/test/:id/info'
-        }
-    }
-}
-
-let namingStrategy ={
-    getRequestKey: sinon.stub()
-}
-
-// Assuming an existing store object
-let store = {
-    setRequests: sinon.spy(),
-    getRequests: sinon.stub()
-};
-
 describe('RequestTracker', () => {
-    let tracker;
+    let tracker, namingStrategy;
 
-    beforeEach(()=> {
-        tracker = new RequestTracker(store, namingStrategy);
+    beforeEach(() => {
+        tracker = new RequestTracker();
+        namingStrategy = {
+            getRequestKey: sinon.stub()
+        };
+
         getInstanceBinder(tracker)
             .setInstance(s_requestNamingStrategy, namingStrategy)
-            .setInstance(s_requestStore, store);
+            .setInstance(s_requestStore, new MapArray());
     })
-
-    describe('#currentRequests()', () => {
-        it('should get all current requests from the store', () => {
-            tracker.currentRequests;
-            expect(store.getRequests.calledOnce).to.be.true;
-        });
-    });
 
     describe('#getRequests()', () => {
         it('should get all requests of a specific key', () => {
             let requestKey = 'GET:url1';
-            store.getRequests.returns({ [requestKey]: ['req1', 'req2'] });
+            getRequestStore(tracker).push(requestKey, 'req1', 'req2')
 
             let request = {
                 options: {
@@ -80,23 +60,24 @@ describe('RequestTracker', () => {
                 },
                 name: 'url1'
             };
-            store.getRequests.returns({ [requestKey]: ['req1', 'req2'] });
+            namingStrategy.getRequestKey.returns(requestKey);
             tracker.push(request);
-            expect(store.setRequests.calledOnce).to.be.true;
+            expect(getRequestStore(tracker).get(requestKey)).to.have.length(1);
         });
     });
 
     describe('#pop()', () => {
         it('should remove request from the specific key and emit an event', () => {
             let requestKey = 'GET:url1';
-            store.getRequests.returns({ [requestKey]: ['req1', 'req2'] });
+            getRequestStore(tracker).push(requestKey, 'req1', 'req2');
 
             namingStrategy.getRequestKey.returns(requestKey)
+
             let request = 'req1';
-            store.getRequests.returns({ [requestKey]: ['req1', 'req2'] });
+
             tracker.pop(request);
 
-            expect(store.setRequests.calledOnce).to.be.true;
+            expect(getRequestStore(tracker).get(requestKey)).to.have.length(1);
         });
     });
 });

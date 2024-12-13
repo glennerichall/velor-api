@@ -3,7 +3,7 @@ import sinon from "sinon";
 import {composeSendRequest} from "../api/composers/composeSendRequest.mjs";
 import {
     createAppServicesInstance,
-    SCOPE_SINGLETON
+    SCOPE_PROTOTYPE
 } from "velor-services/injection/ServicesContext.mjs";
 import {
     s_api,
@@ -18,7 +18,8 @@ import {RequestBuilder} from "../api/request/RequestBuilder.mjs";
 import {request} from "../api/composers/request.mjs";
 import {requestWithRule} from "../api/composers/requestWithRule.mjs";
 import {alwaysSendRule} from "../api/ops/rules.mjs";
-import {getRequestInvoker} from "../api/application/services/apiServices.mjs"; // Update the path to your module
+import {getRequestInvoker} from "../api/application/services/apiServices.mjs";
+import {mergeDefaultApiOptions} from "../api/application/services/mergeDefaultApiOptions.mjs"; // Update the path to your module
 
 const {
     expect,
@@ -33,25 +34,20 @@ describe('requester', () => {
         let services, fetch, regulator;
 
         beforeEach(() => {
-            services = createAppServicesInstance({
-                factories: {
-                    [s_api]: Api,
-                    [s_requestInvoker]: RequestInvoker,
-                    [s_requestBuilder]: {
-                        scope: SCOPE_SINGLETON,
-                        clazz: RequestBuilder
-                    },
-                    [s_requestRegulator]: () => regulator = {
-                        accept: sinon.stub()
-                    },
-                    [s_fetch]: () => fetch = {
-                        send: sinon.stub(),
-                        createHeaders: sinon.stub().returns({
-                            append: sinon.stub()
-                        })
+            services = createAppServicesInstance(
+                mergeDefaultApiOptions({
+                    factories: {
+                        [s_requestRegulator]: () => regulator = {
+                            accept: sinon.stub()
+                        },
+                        [s_fetch]: () => fetch = {
+                            send: sinon.stub(),
+                            createHeaders: sinon.stub().returns({
+                                append: sinon.stub()
+                            })
+                        }
                     }
-                }
-            });
+                }));
         })
 
         it('should create method send to builder', () => {
