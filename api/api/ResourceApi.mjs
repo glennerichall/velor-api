@@ -46,12 +46,47 @@ export function composeCreate(services, request) {
             .send(data);
 }
 
-export function createResourceApiWithRuleComposer(rule = alwaysSendRule) {
+export function createResourceApiWithRuleComposers(rule = alwaysSendRule) {
     let requester = services => requestWithRule(services, rule);
-    return createResourceApiComposer(requester);
+    return createResourceApiComposers(requester);
 }
 
-export function createResourceApiComposer(requester = request) {
+export function getResourceApi(services) {
+
+    function compose(name, composers) {
+        const {
+            composeGetOne,
+            composeGetMany,
+            composeDelete,
+            composeCreate,
+        } = composers;
+
+        let getOne = composeGetOne(services),
+            getMany = composeGetMany(services),
+            deleteOne = composeDelete(services),
+            create = composeCreate(services);
+
+        return {
+            getOne: (item, query) => getOne(name, item, query),
+            getMany: (query) => getMany(name, query),
+            delete: (item) => deleteOne(name, item),
+            create: (data) => create(name, data),
+        };
+    }
+
+    return {
+        for(name) {
+            return {
+                withRule(rule) {
+                    return compose(name, createResourceApiWithRuleComposers(rule))
+                },
+                ...compose(name, createResourceApiComposers())
+            }
+        }
+    }
+}
+
+export function createResourceApiComposers(requester = request) {
     return {
         composeGetOne: services => composeGetOne(services, requester),
         composeGetMany: services => composeGetMany(services, requester),

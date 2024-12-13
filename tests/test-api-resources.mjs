@@ -14,8 +14,9 @@ import {
 import {MapArray} from "velor-utils/utils/map.mjs";
 import {getDataFromResponse} from "../api/ops/getDataFromResponse.mjs";
 import {
-    createResourceApiWithRuleComposer,
+    createResourceApiWithRuleComposers,
     getItemUrlName,
+    getResourceApi,
     ITEM_PARAM
 } from "../api/api/ResourceApi.mjs";
 
@@ -64,7 +65,7 @@ describe("Resource api", () => {
             composeGetMany,
             composeDelete,
             composeCreate,
-        } = createResourceApiWithRuleComposer());
+        } = createResourceApiWithRuleComposers());
     })
 
     it('should fetch many', async () => {
@@ -138,13 +139,11 @@ describe("Resource api", () => {
         let getOne = composeGetOne(services);
 
         let expectedResponse = {
-            headers: new Map(),
             ok: true,
             body: {
                 'a': 'asdsdfsdf'
             }
         };
-        expectedResponse.headers.set('content-type', 'application/json');
         fetch.send.returns(expectedResponse);
         urlProvider.urls = {
             [getItemUrlName('A_RESOURCE_NAME')]: `/api/v2/my_resource/:${ITEM_PARAM}`
@@ -199,6 +198,39 @@ describe("Resource api", () => {
         expect(args).to.have.length(2);
         expect(args[0]).to.eq('/api/v2/my_resource/my-item-id');
         expect(args[1]).to.have.property('method', 'DELETE');
+    })
+
+    it('should compose resource provider', async()=> {
+        urlProvider.urls = {
+            [getItemUrlName('A_RESOURCE_NAME')]: `/api/v2/my_resource/:${ITEM_PARAM}`
+        };
+        let expectedResponse = {
+            ok: true,
+            body: {
+                'a': 'asdsdfsdf'
+            }
+        };
+        fetch.send.returns(expectedResponse);
+
+        let provider = getResourceApi(services).for('A_RESOURCE_NAME');
+        let response = await provider.getOne('my-item-id', {
+            fields: ['field1', 'field2'],
+        });
+
+        expect(fetch.send).calledOnce;
+        let args = fetch.send.args[0];
+
+        expect(args).to.have.length(2);
+        expect(args[0]).to.eq('/api/v2/my_resource/my-item-id?fields=field1&fields=field2');
+        expect(args[1]).to.have.property('method', 'GET');
+
+        response = await getDataFromResponse(response);
+        expect(response).to.deep.eq(expectedResponse.body);
+
+
+
+
+
     })
 
 })
