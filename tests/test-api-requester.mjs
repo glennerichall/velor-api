@@ -76,10 +76,7 @@ describe('requester', () => {
                 a: 'b'
             });
 
-            expect(options.headers.append.args[0]).have.length(2);
-            expect(options.headers.append.args[0]).deep.eq([
-                'X-Requested-With', 'XMLHttpRequest'
-            ]);
+            expect(options.headers.get( 'X-Requested-With')).to.eq('XMLHttpRequest')
         })
 
         it('should create method send for ruled', () => {

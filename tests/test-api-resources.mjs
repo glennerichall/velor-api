@@ -246,9 +246,8 @@ describe("Resource api", () => {
         expect(args[1]).to.have.property('method', 'GET');
         expect(args[1]).to.have.property('headers');
 
-        expect(args[1].headers.append).calledTwice;
 
-        expect(args[1].headers.append).calledWith('x-custom-header', 'header value');
+        expect(args[1].headers.get('x-custom-header')).to.eq('header value');
 
     })
 

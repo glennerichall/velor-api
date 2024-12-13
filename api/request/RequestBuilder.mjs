@@ -1,13 +1,12 @@
 import {UrlBuilder} from "./UrlBuilder.mjs";
 import {isTypedArray} from "velor-utils/utils/buffer/isTypedArray.mjs";
-import {getFetch} from "../application/services/apiServices.mjs";
 
 export class RequestBuilder extends UrlBuilder {
     #method;
     #body;
-    #headers;
+    #headers = new Map();
     #options = {};
-    // FIXME should be provided by Fetch class
+    // FIXME should be abstract
     #controller = new AbortController();
     #canAbort = true;
 
@@ -17,10 +16,7 @@ export class RequestBuilder extends UrlBuilder {
     }
 
     set(name, value) {
-        if (!this.#headers) {
-            this.#headers = getFetch(this).createHeaders();
-        }
-        this.#headers.append(name, value);
+        this.#headers.set(name, value);
         return this;
     }
 

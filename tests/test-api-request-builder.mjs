@@ -44,10 +44,8 @@ test.describe('RequestBuilder with DI and ServicesContext', function () {
     test.describe('set() method', function () {
         test('should set headers using createHeaders from fetch', function () {
             requestBuilder.set('Authorization', 'Bearer token');
-
-            const headersStub = fetchStub.createHeaders();
-            expect(headersStub.append.calledOnce).to.be.true;
-            expect(headersStub.append.calledWith('Authorization', 'Bearer token')).to.be.true;
+            const options = requestBuilder.buildOptions();
+            expect(options.headers.get('Authorization')).to.eq('Bearer token');
         });
     });
 
@@ -83,8 +81,7 @@ test.describe('RequestBuilder with DI and ServicesContext', function () {
             requestBuilder.setContent(data);
             const options = requestBuilder.buildOptions();
 
-            const headersStub = fetchStub.createHeaders();
-            expect(headersStub.append.calledWith('Content-Type', 'application/json')).to.be.true;
+            expect(options.headers.get('Content-Type')).to.eq('application/json');
             expect(options.body).to.equal(JSON.stringify(data));
         });
 
@@ -93,8 +90,7 @@ test.describe('RequestBuilder with DI and ServicesContext', function () {
             requestBuilder.setContent(buffer);
             const options = requestBuilder.buildOptions();
 
-            const headersStub = fetchStub.createHeaders();
-            expect(headersStub.append.calledWith('Content-Type', 'application/octet-stream')).to.be.true;
+            expect(options.headers.get('Content-Type')).to.eq('application/octet-stream');
             expect(options.body).to.equal(buffer);
         });
     });
