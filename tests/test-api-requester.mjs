@@ -11,14 +11,14 @@ import {
     s_requestBuilder,
     s_requestInvoker,
     s_requestRegulator
-} from "../api/application/services/apiServiceKeys.mjs";
+} from "../api/application/services/serviceKeys.mjs";
 import {Api} from "../api/api/Api.mjs";
 import {RequestInvoker} from "../api/request/RequestInvoker.mjs";
 import {RequestBuilder} from "../api/request/RequestBuilder.mjs";
 import {request} from "../api/composers/request.mjs";
 import {requestWithRule} from "../api/composers/requestWithRule.mjs";
 import {alwaysSendRule} from "../api/ops/rules.mjs";
-import {getRequestInvoker} from "../api/application/services/apiServices.mjs";
+import {getRequestInvoker} from "../api/application/services/services.mjs";
 import {mergeDefaultApiOptions} from "../api/application/services/mergeDefaultApiOptions.mjs"; // Update the path to your module
 
 const {

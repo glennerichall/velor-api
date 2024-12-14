@@ -11,12 +11,12 @@ import {
     s_requestInvoker,
     s_requestRegulator,
     s_urlProvider
-} from "../api/application/services/apiServiceKeys.mjs";
+} from "../api/application/services/serviceKeys.mjs";
 import {Api} from "../api/api/Api.mjs";
 import {RequestInvoker} from "../api/request/RequestInvoker.mjs";
 import {RequestBuilder} from "../api/request/RequestBuilder.mjs";
 import sinon from "sinon";
-import {getApiUrlProvider} from "../api/application/services/apiServices.mjs";
+import {getApiUrlProvider} from "../api/application/services/services.mjs";
 
 const {
     expect,

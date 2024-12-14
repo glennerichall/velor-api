@@ -3,7 +3,7 @@ import {
     ResponseWrapper,
 } from "./ResponseWrapper.mjs";
 import {BackendError} from "../BackendError.mjs";
-import {getFetch} from "../application/services/apiServices.mjs";
+import {getFetch} from "../application/services/services.mjs";
 
 export class RequestInvoker {
 

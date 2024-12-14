@@ -5,12 +5,12 @@ import {
     s_fetch,
     s_requestStore,
     s_urlProvider
-} from "../api/application/services/apiServiceKeys.mjs";
+} from "../api/application/services/serviceKeys.mjs";
 import {mergeDefaultApiOptions} from "../api/application/services/mergeDefaultApiOptions.mjs";
 import {
     getApiUrlProvider,
     getFetch
-} from "../api/application/services/apiServices.mjs";
+} from "../api/application/services/services.mjs";
 import {MapArray} from "velor-utils/utils/map.mjs";
 import {getDataFromResponse} from "../api/ops/getDataFromResponse.mjs";
 import {

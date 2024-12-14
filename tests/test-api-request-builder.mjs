@@ -5,7 +5,7 @@ import {
 } from "velor-services/injection/ServicesContext.mjs";
 
 import {setupTestContext} from "velor-utils/test/setupTestContext.mjs";
-import {s_fetch} from "../api/application/services/apiServiceKeys.mjs";
+import {s_fetch} from "../api/application/services/serviceKeys.mjs";
 import {RequestBuilder} from "../api/request/RequestBuilder.mjs";
 
 const {

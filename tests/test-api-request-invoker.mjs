@@ -5,9 +5,9 @@ import {
     SCOPE_SINGLETON,
 } from "velor-services/injection/ServicesContext.mjs";
 import {setupTestContext} from "velor-utils/test/setupTestContext.mjs";
-import {s_fetch} from "../api/application/services/apiServiceKeys.mjs";
+import {s_fetch} from "../api/application/services/serviceKeys.mjs";
 import {RequestInvoker} from "../api/request/RequestInvoker.mjs";
-import {getFetch} from "../api/application/services/apiServices.mjs";
+import {getFetch} from "../api/application/services/services.mjs";
 import {BackendError} from "../api/BackendError.mjs";
 
 

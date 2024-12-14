@@ -1,7 +1,7 @@
 import {MessageBuilder} from "velor-messaging/messaging/message/MessageBuilder.mjs";
-import {getProvider} from "velor-services/injection/baseServices.mjs";
+import {getProvider} from "velor-services/application/services/baseServices.mjs";
 
-import {s_messageCoder} from "../services/apiServiceKeys.mjs";
+import {s_messageCoder} from "../services/serviceKeys.mjs";
 
 export function createMessageBuilderInstance(services) {
     const provider = getProvider(services);

@@ -1,5 +1,5 @@
 import {expressRouteToRegExp} from "velor-utils/utils/expressRouteToRegExp.mjs";
-import {getApiUrlProvider} from "../application/services/apiServices.mjs";
+import {getApiUrlProvider} from "../application/services/services.mjs";
 
 export class RequestNamingStrategy {
 

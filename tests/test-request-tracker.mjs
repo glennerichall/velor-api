@@ -6,9 +6,9 @@ import {getInstanceBinder} from "velor-services/injection/ServicesContext.mjs";
 import {
     s_requestNamingStrategy,
     s_requestStore
-} from "../api/application/services/apiServiceKeys.mjs";
+} from "../api/application/services/serviceKeys.mjs";
 import {MapArray} from "velor-utils/utils/map.mjs";
-import {getRequestStore} from "../api/application/services/apiServices.mjs";
+import {getRequestStore} from "../api/application/services/services.mjs";
 
 
 const {

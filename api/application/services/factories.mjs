@@ -6,7 +6,7 @@ import {
     s_requestRegulator,
     s_requestTracker,
     s_urlProvider,
-} from "./apiServiceKeys.mjs";
+} from "./serviceKeys.mjs";
 import {RequestRegulator} from "../../request/RequestRegulator.mjs";
 import {RequestNamingStrategy} from "../../request/RequestNamingStrategy.mjs";
 import {RequestTracker} from "../../request/RequestTracker.mjs";
@@ -17,7 +17,7 @@ import {Api} from "../../api/Api.mjs";
 import {RequestInvoker} from "../../request/RequestInvoker.mjs";
 
 
-export const apiFactories = {
+export const factories = {
     [s_api]: Api,
     [s_requestInvoker]: RequestInvoker,
     [s_requestRegulator]: RequestRegulator,

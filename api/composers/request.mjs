@@ -1,4 +1,4 @@
-import {getApi, getRequestInvoker} from "../application/services/apiServices.mjs";
+import {getApi, getRequestInvoker} from "../application/services/services.mjs";
 import {createApiWithSendMethod} from "./createApiWithSendMethod.mjs";
 
 export function request(services, options) {

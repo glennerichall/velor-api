@@ -1,4 +1,4 @@
-import {apiFactories} from "./apiFactories.mjs";
+import {factories as defaultFactories} from "./factories.mjs";
 
 export function mergeDefaultApiOptions(options = {}) {
 
@@ -9,7 +9,7 @@ export function mergeDefaultApiOptions(options = {}) {
     return {
         ...options,
         factories: {
-            ...apiFactories,
+            ...defaultFactories,
             ...factories
         }
     };

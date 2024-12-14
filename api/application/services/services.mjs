@@ -1,4 +1,4 @@
-import {getProvider} from "velor-services/injection/baseServices.mjs";
+import {getProvider} from "velor-services/application/services/baseServices.mjs";
 import {
     s_api,
     s_apiBuilder,
@@ -11,7 +11,7 @@ import {
     s_requestTracker,
     s_requestTransmitter,
     s_urlProvider
-} from "./apiServiceKeys.mjs";
+} from "./serviceKeys.mjs";
 
 export function getFetch(services) {
     return getProvider(services)[s_fetch]();

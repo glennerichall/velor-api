@@ -1,6 +1,6 @@
 import {requestWithRule} from "../composers/requestWithRule.mjs";
 import {alwaysSendRule} from "../ops/rules.mjs";
-import {getApiUrlProvider} from "../application/services/apiServices.mjs";
+import {getApiUrlProvider} from "../application/services/services.mjs";
 import {request} from "../composers/request.mjs";
 
 export const ONE_NAME_SUFFIX = "_ITEM";

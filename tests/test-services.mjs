@@ -11,7 +11,7 @@ import {
     getRequestNamingStrategy,
     getRequestRegulator,
     getRequestTracker
-} from "../api/application/services/apiServices.mjs";
+} from "../api/application/services/services.mjs";
 import {RequestRegulator} from "../api/request/RequestRegulator.mjs";
 import {RequestTracker} from "../api/request/RequestTracker.mjs";
 import {RequestNamingStrategy} from "../api/request/RequestNamingStrategy.mjs";
@@ -19,7 +19,7 @@ import {ApiUrlProvider} from "../api/api/ApiUrlProvider.mjs";
 import {
     BACKEND_HOST_URL,
     BACKEND_VERSION_URLS
-} from "../api/application/services/apiEnvKeys.mjs";
+} from "../api/application/services/envKeys.mjs";
 
 const {
     expect,

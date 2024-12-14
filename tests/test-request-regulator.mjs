@@ -1,6 +1,6 @@
 import {setupTestContext} from "velor-utils/test/setupTestContext.mjs";
 import {createAppServicesInstance, getServiceBinder} from "velor-services/injection/ServicesContext.mjs";
-import {s_requestTracker} from "../api/application/services/apiServiceKeys.mjs";
+import {s_requestTracker} from "../api/application/services/serviceKeys.mjs";
 import sinon from "sinon";
 import {RequestRegulator} from "../api/request/RequestRegulator.mjs";
 

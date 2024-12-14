@@ -2,7 +2,7 @@ import {Emitter} from "velor-utils/utils/Emitter.mjs";
 import {
     getRequestNamingStrategy,
     getRequestStore
-} from "../application/services/apiServices.mjs";
+} from "../application/services/services.mjs";
 
 export class RequestTracker extends Emitter {
 

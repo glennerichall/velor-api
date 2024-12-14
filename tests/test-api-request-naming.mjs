@@ -13,7 +13,7 @@ import {RequestNamingStrategy} from "../api/request/RequestNamingStrategy.mjs";
 import {getInstanceBinder} from "velor-services/injection/ServicesContext.mjs";
 import {
     s_urlProvider
-} from "../api/application/services/apiServiceKeys.mjs";
+} from "../api/application/services/serviceKeys.mjs";
 
 describe('RequestNamingStrategy', () => {
     let urlProviderMock;
