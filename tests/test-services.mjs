@@ -40,7 +40,7 @@ describe("application services", () => {
     })
 
     it('should not have fetch', ()=> {
-        expect(()=> getFetch(services)).to.throw(Error, /Provide a factory or a class for "fetch"/);
+        expect(()=> getFetch(services)).to.throw(Error, 'Provide a factory or a class for "Symbol(fetch)"');
     })
 
     it('should have RequestRegulator', ()=> {
