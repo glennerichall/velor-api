@@ -5,35 +5,46 @@ import {isValidURL} from "velor-utils/utils/urls.mjs";
 import {requestWithRule} from "../composers/requestWithRule.mjs";
 import {getApiUrlProvider} from "../application/services/services.mjs";
 
-export class ApiBuilder extends RequestBuilderProvider {
-    #options = {};
-    #ruleBuilder = new RuleBuilder();
-    #onBuildListeners = [];
-    #onResponseListeners = [];
+const kg_rule = Symbol("rule");
+const kp_options = Symbol("options");
+const kp_ruleBuilder = Symbol("ruleBuilder");
+const kp_onBuildListeners = Symbol("onBuildListeners");
+const kp_onResponseListeners = Symbol("onResponseListeners");
 
-    get #rule() {
-        return this.#ruleBuilder.build();
+export class ApiBuilder extends RequestBuilderProvider {
+
+    
+    constructor() {
+        super();
+        this[kp_options] = {};
+        this[kp_ruleBuilder] = new RuleBuilder();
+        this[kp_onBuildListeners] = [];
+        this[kp_onResponseListeners] = [];
+    }
+
+    get [kg_rule]() {
+        return this[kp_ruleBuilder].build();
     }
 
     onBuild(listener) {
-        this.#onBuildListeners.push(listener);
+        this[kp_onBuildListeners].push(listener);
         return this;
     }
 
     onResponse(listener) {
-        this.#onResponseListeners.push(listener);
+        this[kp_onResponseListeners].push(listener);
         return this;
     }
 
     withOptions(options = {}) {
-        this.#options = {
-            ...this.#options, ...options
+        this[kp_options] = {
+            ...this[kp_options], ...options
         };
         return this;
     }
 
     withRule(rule) {
-        this.#ruleBuilder.append(rule);
+        this[kp_ruleBuilder].append(rule);
         return this;
     }
 
@@ -45,15 +56,15 @@ export class ApiBuilder extends RequestBuilderProvider {
     }
 
     getBuilder(method, nameOrUrl) {
-        let rule = this.#rule;
-        let options = this.#options ?? {};
+        let rule = this[kg_rule];
+        let options = this[kp_options] ?? {};
 
         let api = requestWithRule(this, rule, options);
         let builder = api[method](nameOrUrl);
         let urlProvider = getApiUrlProvider(this);
 
         bindReplaceResult(builder, 'getRequest', request => {
-            for (let listener of this.#onBuildListeners) {
+            for (let listener of this[kp_onBuildListeners]) {
                 listener(request);
             }
             return request;
@@ -68,7 +79,7 @@ export class ApiBuilder extends RequestBuilderProvider {
         });
 
         bindReplaceResult(builder, 'send', async response => {
-            for (let listener of this.#onResponseListeners) {
+            for (let listener of this[kp_onResponseListeners]) {
                 await listener(response);
             }
             return response;

@@ -127,7 +127,7 @@ describe('ApiRequestBase', () => {
 
         expect(regulator.accept.calledOnce).to.be.true;
 
-        let args = regulator.accept.args[0];
+        let [args] = regulator.accept.args;
 
         expect(args).to.have.length(3);
         expect(args[0].url).to.eq('/an/url');

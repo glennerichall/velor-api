@@ -1,23 +1,25 @@
 import {getDataFromResponse} from "../ops/getDataFromResponse.mjs";
 
+const kp_response = Symbol("response");
+const kp_data = Symbol("data");
+
 export class ResponseWrapper {
-    #response;
-    #data;
+
 
     constructor(response) {
-        this.#response = response;
+        this[kp_response] = response;
     }
 
     get headers() {
-        return this.#response.headers;
+        return this[kp_response].headers;
     }
 
     get ok() {
-        return this.#response.ok;
+        return this[kp_response].ok;
     }
 
     get status() {
-        return this.#response.status;
+        return this[kp_response].status;
     }
 
     get body() {
@@ -25,10 +27,10 @@ export class ResponseWrapper {
     }
 
     async unpack() {
-        if (!this.#data) {
-            this.#data = getDataFromResponse(this.#response);
+        if (!this[kp_data]) {
+            this[kp_data] = getDataFromResponse(this[kp_response]);
         }
-        return this.#data;
+        return this[kp_data];
     }
 
     async json() {

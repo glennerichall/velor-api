@@ -1,27 +1,31 @@
 import {buildUrl} from "velor-utils/utils/urls.mjs";
 
+const kp_url = Symbol("url");
+const kp_params = Symbol("params");
+const kp_query = Symbol("query");
+
 export class UrlBuilder {
-    #url;
-    #query = {};
-    #params = {};
 
     constructor(url) {
-        this.#url = url;
-        if (!this.#url) {
+        this[kp_url] = url;
+        if (!this[kp_url]) {
             throw new Error("Url parameter missing");
-        }
+        } 
+        
+        this[kp_query] = {};
+        this[kp_params] = {};
     }
 
     getUrl() {
-        return this.#url;
+        return this[kp_url];
     }
 
     getQuery() {
-        return this.#query;
+        return this[kp_query];
     }
 
     getParams() {
-        return this.#params;
+        return this[kp_params];
     }
 
     buildUrl() {
@@ -36,11 +40,11 @@ export class UrlBuilder {
         if (typeof key === 'object') {
             let keyValues = key;
             for (let key in keyValues) {
-                this.#query[key] = keyValues[key];
+                this[kp_query][key] = keyValues[key];
             }
             return this;
         }
-        this.#query[key] = value;
+        this[kp_query][key] = value;
         return this;
     }
 
@@ -48,17 +52,17 @@ export class UrlBuilder {
         if (typeof key === 'object') {
             let keyValues = key;
             for (let key in keyValues) {
-                this.#params[key] = keyValues[key];
+                this[kp_params][key] = keyValues[key];
             }
             return this;
         }
-        this.#params[key] = value;
+        this[kp_params][key] = value;
         return this;
     }
 
     params(keyValues) {
         for (let key in keyValues) {
-            this.#params[key] = keyValues[key];
+            this[kp_params][key] = keyValues[key];
         }
         return this;
     }

@@ -3,22 +3,25 @@ import {retry} from "velor-utils/utils/functional.mjs";
 import {requestWithRule} from "../composers/requestWithRule.mjs";
 import {unpackResponse} from "../ops/unpackResponse.mjs";
 
+const kp_backendUrl = Symbol("backendUrl");
+const kp_versionPath = Symbol("versionPath");
+const kp_urls = Symbol("urls");
+
 export class ApiUrlProvider {
-    #backendUrl;
-    #versionPath;
-    #urls = null;
+
 
     constructor(backendUrl, versionPath = '/api/version') {
-        this.#backendUrl = backendUrl;
-        this.#versionPath = versionPath;
+        this[kp_backendUrl] = backendUrl;
+        this[kp_versionPath] = versionPath;
+        this[kp_urls] = null;
     }
 
     get versionUrl() {
-        return `${this.#backendUrl}${this.#versionPath}`;
+        return `${this[kp_backendUrl]}${this[kp_versionPath]}`;
     }
 
     get urls() {
-        return this.#urls;
+        return this[kp_urls];
     }
 
     async getOrFetchUrls() {
@@ -35,18 +38,18 @@ export class ApiUrlProvider {
 
             if (response) {
                 let version = await unpackResponse(response);
-                this.#urls = version.api.urls;
+                this[kp_urls] = version.api.urls;
             }
-            return this.#urls;
+            return this[kp_urls];
         });
     }
 
     getUrl(name) {
-        return this.#urls[name];
+        return this[kp_urls][name];
     }
 
     clear() {
-        this.#urls = null;
+        this[kp_urls] = null;
     }
 
 }
